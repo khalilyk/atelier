@@ -1,70 +1,13 @@
 import Image from "next/image";
+import HeroSplit from "./components/HeroSplit";
+import ProjectsCarousel from "./components/ProjectsCarousel";
 
 export default function Home() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "var(--font-sans), Arial, sans-serif" }}>
 
-      {/* ── NAV ── */}
-      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-8 py-5">
-        <div />
-        <Image src="/Atelier-logo.png" alt="Atelier" width={120} height={48} className="object-contain" priority />
-        <button className="flex items-center gap-2 text-white/70 text-xs tracking-[0.2em] uppercase">
-          Menu
-          <span className="flex flex-col gap-[3px]">
-            <span className="block w-4 h-px bg-white/70" />
-            <span className="block w-4 h-px bg-white/70" />
-            <span className="block w-3 h-px bg-white/70" />
-          </span>
-        </button>
-      </header>
-
-      {/* ── HERO SPLIT ── */}
-      <section className="grid grid-cols-2 h-screen">
-        {/* Classic — warm left */}
-        <div
-          className="relative flex flex-col justify-end p-12 pb-16 overflow-hidden"
-          style={{ background: "linear-gradient(160deg,#c8b89a 0%,#8a7560 100%)" }}
-        >
-          <div className="absolute inset-0 bg-black/20" />
-          <div className="relative z-10">
-            <h1 className="text-white text-6xl font-light tracking-[0.18em] uppercase mb-3" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              Classic
-            </h1>
-            <div className="w-8 h-px bg-white/60 mb-4" />
-            <p className="text-white/80 text-sm leading-relaxed max-w-xs mb-6">
-              Reserved for the exceptional.<br />
-              Furniture, lighting and objects<br />
-              curated for everyday excellence.
-            </p>
-            <a href="#" className="flex items-center gap-2 text-white text-xs tracking-[0.2em] uppercase border-b border-white/40 pb-px w-fit">
-              Explore Classic &nbsp;→
-            </a>
-          </div>
-        </div>
-
-        {/* Signature — dark right */}
-        <div
-          className="relative flex flex-col justify-end p-12 pb-16 overflow-hidden"
-          style={{ background: "linear-gradient(160deg,#2a2520 0%,#0d0c0b 100%)" }}
-        >
-          <div className="absolute inset-0 bg-black/30" />
-          <div className="relative z-10">
-            <h1 className="text-white text-6xl font-light tracking-[0.18em] uppercase mb-3" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              Signature
-            </h1>
-            <div className="w-8 h-px bg-white/40 mb-4" />
-            <p className="text-white/70 text-sm leading-relaxed max-w-xs mb-6">
-              A collection of exceptional pieces,<br />
-              bespoke sourcing and elevated<br />
-              design solutions for<br />
-              landmark spaces.
-            </p>
-            <a href="#" className="flex items-center gap-2 text-white text-xs tracking-[0.2em] uppercase border-b border-white/30 pb-px w-fit">
-              Explore Signature &nbsp;→
-            </a>
-          </div>
-        </div>
-      </section>
+      {/* ── HERO (interactive reveal) ── */}
+      <HeroSplit />
 
       {/* ── ABOUT ── */}
       <section className="bg-[#f5f0e8] py-20 px-8 text-center">
@@ -101,55 +44,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PROJECTS ── */}
-      <section className="bg-[#f5f0e8] pt-16 pb-0">
-        <div className="px-8 max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 gap-8 mb-10">
-            <div>
-              <p className="text-[10px] tracking-[0.3em] uppercase text-stone-500 mb-4">Projects</p>
-              <h2 className="text-5xl font-light leading-tight text-stone-900" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-                Spaces that<br />inspire.
-              </h2>
-            </div>
-            <div className="flex flex-col justify-between">
-              <p className="text-sm text-stone-600 leading-relaxed max-w-xs">
-                We collaborate with leading architects, designers and developers to deliver timeless interiors across hospitality, commercial and residential spaces.
-              </p>
-              <div className="flex items-center justify-between mt-4">
-                <a href="#" className="text-xs tracking-[0.2em] uppercase text-stone-700 border-b border-stone-400 pb-px">
-                  View All Projects &nbsp;→
-                </a>
-                <div className="flex gap-2">
-                  <button className="w-8 h-8 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-600 transition-colors">‹</button>
-                  <button className="w-8 h-8 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-600 transition-colors">›</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Project cards */}
-        <div className="grid grid-cols-4">
-          {[
-            { name: "ETCETFRA", type: "Hospitality", location: "Burwood, Sydney", bg: "from-stone-800 to-stone-900" },
-            { name: "Restaurant Project", type: "Hospitality", location: "Dubai", bg: "from-stone-700 to-stone-900" },
-            { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", bg: "from-zinc-700 to-zinc-900" },
-            { name: "Hotel Project", type: "Hospitality", location: "Beirut", bg: "from-neutral-700 to-neutral-900" },
-          ].map(({ name, type, location, bg }) => (
-            <div key={name} className={`relative h-80 bg-gradient-to-b ${bg} flex flex-col justify-end p-6 overflow-hidden group`}>
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-              <div className="relative z-10">
-                <p className="text-white text-sm font-medium mb-1">{name}</p>
-                <p className="text-white/60 text-xs mb-1">{type}</p>
-                <p className="text-white/50 text-xs mb-4">{location}</p>
-                <a href="#" className="text-white text-xs tracking-[0.15em] uppercase border-b border-white/30 pb-px">
-                  View Project &nbsp;→
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* ── PROJECTS CAROUSEL ── */}
+      <ProjectsCarousel />
 
       {/* ── MATERIALS BANNER ── */}
       <section className="relative h-48 grid grid-cols-3 overflow-hidden">
@@ -195,16 +91,17 @@ export default function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#111110] py-14 px-8">
+      <section className="bg-[#0d0c0b] py-14 px-8">
         <div className="max-w-6xl mx-auto grid grid-cols-3 gap-8 items-center">
           <div>
             <h2 className="text-3xl font-light text-white leading-snug" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
               Creating something<br />extraordinary?
             </h2>
           </div>
-          <div>
+          <div className="flex items-stretch">
+            <div className="w-px bg-white/15 mr-8" />
             <p className="text-stone-400 text-sm leading-relaxed">
-              Whether you're opening a restaurant, building a home or shaping a hospitality destination, Atelier helps bring the vision together.
+              Whether it's a single room or an entire building, we help bring your vision to life with precision and care.
             </p>
           </div>
           <div className="flex justify-end">
@@ -219,54 +116,74 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-[#0d0c0b] pt-14 pb-8 px-8">
+      <footer className="bg-[#0a0908] px-8 pt-20 pb-0">
         <div className="max-w-6xl mx-auto">
-          {/* Top footer grid */}
-          <div className="grid grid-cols-4 gap-8 mb-12">
-            {/* Logo + tagline */}
-            <div>
-              <div className="mb-3">
-                <Image src="/Atelier-logo.png" alt="Atelier" width={100} height={40} className="object-contain" />
-              </div>
-              <p className="text-stone-500 text-xs leading-relaxed">
+          {/* Main footer grid: logo | nav | contact */}
+          <div className="grid grid-cols-3 gap-0">
+
+            {/* Left: Logo + tagline */}
+            <div className="flex flex-col items-center justify-center text-center pr-12 border-r border-white/10">
+              <Image src="/Atelier-logo.png" alt="Atelier" width={160} height={64} className="object-contain mb-5" />
+              <p className="text-stone-400 text-sm leading-relaxed" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
                 Furniture, lighting and objects<br />for exceptional spaces.
               </p>
             </div>
 
-            {/* Nav links */}
-            <div className="grid grid-cols-2 col-span-2 gap-4 pt-1">
-              <div className="flex flex-col gap-3">
-                {["Classic", "Signature", "Brands"].map((l) => (
-                  <a key={l} href="#" className="text-stone-400 text-xs tracking-[0.15em] uppercase hover:text-white transition-colors">{l}</a>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3">
-                {["Projects", "Journal", "Contact"].map((l) => (
-                  <a key={l} href="#" className="text-stone-400 text-xs tracking-[0.15em] uppercase hover:text-white transition-colors">{l}</a>
-                ))}
-              </div>
+            {/* Center: Nav links */}
+            <div className="flex flex-col items-center justify-center gap-5 px-12 border-r border-white/10">
+              {["Collections", "Classic", "Signature", "Projects", "Brands", "Journal", "Contact"].map((l) => (
+                <a
+                  key={l}
+                  href="#"
+                  className="text-stone-300 text-xs tracking-[0.25em] uppercase hover:text-[#b8934a] transition-colors"
+                >
+                  {l}
+                </a>
+              ))}
             </div>
 
-            {/* Address */}
-            <div>
-              <p className="text-stone-500 text-xs leading-relaxed mb-4">
-                Level 1, Suite X<br />
-                Revesby NSW 2212
+            {/* Right: Contact */}
+            <div className="flex flex-col justify-center pl-12 gap-0">
+              <p className="text-[#b8934a] text-[10px] tracking-[0.3em] uppercase mb-4">Contact</p>
+
+              <p className="text-white text-sm leading-relaxed mb-4">
+                Level 1, Suite X<br />Revesby NSW 2212
               </p>
-              <p className="text-stone-500 text-xs mb-1">+61 2 8123 4567</p>
-              <p className="text-stone-500 text-xs mb-4">hello@ateliersupplygroup.com.au</p>
-              <div className="flex gap-4">
-                <a href="#" className="text-stone-500 text-[10px] tracking-[0.15em] uppercase hover:text-white transition-colors">Instagram</a>
-                <a href="#" className="text-stone-500 text-[10px] tracking-[0.15em] uppercase hover:text-white transition-colors">LinkedIn</a>
+              <div className="w-8 h-px bg-white/20 mb-4" />
+
+              <p className="text-white text-sm mb-4">+61 2 8123 4567</p>
+              <div className="w-8 h-px bg-white/20 mb-4" />
+
+              <p className="text-white text-sm mb-6">hello@ateliersupplygroup.com.au</p>
+              <div className="w-8 h-px bg-white/20 mb-5" />
+
+              {/* Socials */}
+              <div className="flex flex-col gap-3">
+                <a href="#" className="flex items-center gap-3 text-stone-300 hover:text-white transition-colors group">
+                  <svg className="w-5 h-5 text-[#b8934a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeWidth="1.5" />
+                    <circle cx="12" cy="12" r="4" strokeWidth="1.5" />
+                    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+                  </svg>
+                  <span className="text-xs tracking-[0.2em] uppercase">Instagram</span>
+                </a>
+                <a href="#" className="flex items-center gap-3 text-stone-300 hover:text-white transition-colors group">
+                  <svg className="w-5 h-5 text-[#b8934a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" rx="3" strokeWidth="1.5" />
+                    <path d="M7 10v7M7 7v.5M12 17v-4c0-1.5 1-2 2-2s2 .5 2 2v4M17 10v7" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                  <span className="text-xs tracking-[0.2em] uppercase">LinkedIn</span>
+                </a>
               </div>
             </div>
           </div>
 
           {/* Bottom bar */}
-          <div className="flex justify-between items-center border-t border-stone-800 pt-6">
-            <p className="text-stone-600 text-[10px]">© 2026 Atelier Supply Group Pty Ltd</p>
-            <div className="flex gap-6">
+          <div className="flex justify-between items-center border-t border-white/10 mt-16 py-6">
+            <p className="text-stone-600 text-[10px] tracking-[0.1em]">© 2026 Atelier Supply Group Pty Ltd</p>
+            <div className="flex items-center gap-3">
               <a href="#" className="text-stone-600 text-[10px] tracking-[0.15em] uppercase hover:text-white transition-colors">Privacy Policy</a>
+              <span className="text-stone-700">|</span>
               <a href="#" className="text-stone-600 text-[10px] tracking-[0.15em] uppercase hover:text-white transition-colors">Terms & Conditions</a>
             </div>
           </div>
