@@ -162,7 +162,7 @@ export default function Home() {
           <div className="flex justify-between items-center border-t border-white/10 mt-16 py-6">
             <div>
             <p className="type-body text-stone-600">© 2026 Atelier Supply Group Pty Ltd</p>
-            <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="type-body text-stone-600 hover:text-white transition-colors">Made by NN</a>
+            <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="text-stone-600 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontSize: "16px", fontWeight: 400, lineHeight: 1.8 }}>made by nn</a>
           </div>
             <div className="flex items-center gap-3">
               <a href="#" className="type-nav text-stone-600 hover:text-white transition-colors">Privacy Policy</a>
