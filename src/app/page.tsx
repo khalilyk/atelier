@@ -27,7 +27,7 @@ export default function Home() {
           {[
             { n: "01", title: "Curated\nGlobally", desc: "Access to leading manufacturers and emerging makers worldwide." },
             { n: "02", title: "Delivered\nEnd-to-End", desc: "From quotation through to delivery, we manage every detail." },
-            { n: "03", title: "Hospitality\nFocused", desc: "Built around operational realities and the demands of hospitality." },
+            { n: "03", title: "Focused on\nQuality", desc: "Built around operational realities and the demands of hospitality." },
             { n: "04", title: "Bespoke\nSolutions", desc: "Tailored pieces and bespoke production to bring your vision to life." },
           ].map(({ n, title, desc }) => (
             <div key={n} className="col-span-1 p-6 -m-6 rounded transition-colors duration-300 hover:bg-white/5">
