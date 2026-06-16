@@ -14,7 +14,7 @@ export default function Home() {
       <section className="bg-[#f5f0e8] py-24 px-8 text-center">
         <p className="type-label text-stone-500 mb-8">Atelier</p>
         <p className="type-large text-stone-900 max-w-3xl mx-auto" style={{ fontSize: "54px" }}>
-          We source, procure and deliver exceptional furniture, lighting and objects for hospitality, commercial and residential spaces.
+          We source, procure and deliver exceptional furniture, lighting and objects for commercial and residential spaces.
         </p>
       </section>
 
@@ -27,7 +27,7 @@ export default function Home() {
           {[
             { n: "01", title: "Curated\nGlobally", desc: "Access to leading manufacturers and emerging makers worldwide." },
             { n: "02", title: "Delivered\nEnd-to-End", desc: "From quotation through to delivery, we manage every detail." },
-            { n: "03", title: "Focused on\nQuality", desc: "Built around operational realities and the demands of hospitality." },
+            { n: "03", title: "Focused on\nQuality", desc: "Built around operational realities and the demands of exceptional spaces." },
             { n: "04", title: "Bespoke\nSolutions", desc: "Tailored pieces and bespoke production to bring your vision to life." },
           ].map(({ n, title, desc }) => (
             <div key={n} className="col-span-1 p-6 -m-6 rounded transition-colors duration-300 hover:bg-white/5">
@@ -74,7 +74,7 @@ export default function Home() {
             <div className="col-span-3 grid grid-cols-3 gap-4">
               {[
                 { title: "Design Notes", desc: "Timeless materials and considered details." },
-                { title: "Project Spotlight", desc: "An inside look at our latest hospitality projects." },
+                { title: "Project Spotlight", desc: "An inside look at our latest projects." },
                 { title: "Material Stories", desc: "Exploring the craft and process behind the pieces." },
               ].map(({ title, desc }) => (
                 <div key={title}>

@@ -30,7 +30,7 @@ export default function ProjectsCarousel() {
           </div>
           <div className="flex flex-col justify-between">
             <p className="type-intro text-stone-600 max-w-xs">
-              We collaborate with leading architects, designers and developers to deliver timeless interiors across hospitality, commercial and residential spaces.
+              We collaborate with leading architects, designers and developers to deliver timeless interiors across commercial and residential spaces.
             </p>
             <div className="flex items-center justify-between mt-6">
               <a href="#" className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
