@@ -1,20 +1,13 @@
+import Image from "next/image";
+
 export default function Home() {
   return (
     <div className="min-h-screen" style={{ fontFamily: "var(--font-sans), Arial, sans-serif" }}>
 
       {/* ── NAV ── */}
       <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-8 py-5">
-        <span className="text-white/70 text-xs tracking-[0.2em] uppercase">
-          Sydney&nbsp;/&nbsp;Beirut&nbsp;/&nbsp;Dubai
-        </span>
-        <div className="flex flex-col items-center gap-1">
-          {/* Gold triangle logo mark */}
-          <svg width="28" height="24" viewBox="0 0 28 24" fill="none">
-            <path d="M14 1L27 23H1L14 1Z" stroke="#b8934a" strokeWidth="1.5" fill="none" />
-            <path d="M14 8L20 20H8L14 8Z" fill="#b8934a" />
-          </svg>
-          <span className="text-white text-xs tracking-[0.35em] uppercase">Atelier</span>
-        </div>
+        <div />
+        <Image src="/Atelier-logo.png" alt="Atelier" width={120} height={48} className="object-contain" priority />
         <button className="flex items-center gap-2 text-white/70 text-xs tracking-[0.2em] uppercase">
           Menu
           <span className="flex flex-col gap-[3px]">
@@ -232,12 +225,8 @@ export default function Home() {
           <div className="grid grid-cols-4 gap-8 mb-12">
             {/* Logo + tagline */}
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <svg width="20" height="17" viewBox="0 0 28 24" fill="none">
-                  <path d="M14 1L27 23H1L14 1Z" stroke="#b8934a" strokeWidth="1.5" fill="none" />
-                  <path d="M14 8L20 20H8L14 8Z" fill="#b8934a" />
-                </svg>
-                <span className="text-white text-xs tracking-[0.3em] uppercase">Atelier</span>
+              <div className="mb-3">
+                <Image src="/Atelier-logo.png" alt="Atelier" width={100} height={40} className="object-contain" />
               </div>
               <p className="text-stone-500 text-xs leading-relaxed">
                 Furniture, lighting and objects<br />for exceptional spaces.
