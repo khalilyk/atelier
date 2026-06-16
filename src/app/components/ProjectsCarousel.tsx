@@ -54,12 +54,16 @@ export default function ProjectsCarousel() {
         >
           {projects.map(({ name, type, location, img }) => (
             <div key={name} className="flex-none w-1/4">
-              <div className="relative h-[420px] flex flex-col justify-end p-6 overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
+              <div className="relative h-[420px] overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
-                <div className="relative z-10">
+                {/* Title + meta — pinned above the link */}
+                <div className="absolute bottom-16 left-6 right-6 z-10">
                   <p className="type-product text-white mb-1">{name}</p>
                   {type && <p className="type-body text-white/60 mb-[2px]">{type}</p>}
-                  {location && <p className="type-body text-white/45 mb-5">{location}</p>}
+                  {location && <p className="type-body text-white/45">{location}</p>}
+                </div>
+                {/* Link — always at same level */}
+                <div className="absolute bottom-6 left-6 z-10">
                   <a href="#" className="arrow-link type-button text-white border-b border-white/25 pb-px w-fit">
                     View Project &nbsp;<span className="arrow">→</span>
                   </a>
