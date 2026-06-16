@@ -27,8 +27,6 @@ export default function HeroSplit() {
     getSplit(e.touches[0].clientX);
   }, [getSplit]);
 
-  // Hide Classic text when divider is in the Classic zone (dragged left)
-  // Hide Signature text when divider is in the Signature zone (dragged right)
   const classicVisible = split >= 48;
   const signatureVisible = split <= 52;
 
@@ -38,18 +36,16 @@ export default function HeroSplit() {
       className="relative h-screen overflow-hidden select-none"
       style={{ cursor: dragging || nearDivider ? "col-resize" : "default" }}
       onMouseMove={onMouseMove}
-      onMouseDown={(e) => {
-        if (nearDivider) setDragging(true);
-      }}
+      onMouseDown={() => { if (nearDivider) setDragging(true); }}
       onMouseUp={() => setDragging(false)}
       onMouseLeave={() => { setDragging(false); setNearDivider(false); }}
       onTouchMove={onTouchMove}
     >
-      {/* NAV — absolute over hero */}
+      {/* NAV */}
       <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-6">
         <div />
         <Image src="/Atelier-logo.png" alt="Atelier" width={120} height={48} className="object-contain" priority />
-        <button className="flex items-center gap-2 text-white/70 text-xs tracking-[0.2em] uppercase">
+        <button className="type-nav flex items-center gap-2 text-white/70">
           Menu
           <span className="flex flex-col gap-[3px]">
             <span className="block w-4 h-px bg-white/70" />
@@ -59,7 +55,7 @@ export default function HeroSplit() {
         </button>
       </header>
 
-      {/* CLASSIC — full width base layer */}
+      {/* CLASSIC */}
       <div className="absolute inset-0" style={{ backgroundImage: "url('/Atelier_Classic.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/35" />
         <div
@@ -67,11 +63,9 @@ export default function HeroSplit() {
           style={{ opacity: classicVisible ? 1 : 0, pointerEvents: classicVisible ? "auto" : "none" }}
         >
           <div>
-            <h1 className="text-white text-6xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              Classic
-            </h1>
-            <p className="text-white/75 text-sm mb-6">Reserved for the exceptional.</p>
-            <a href="#" className="arrow-link flex items-center gap-3 text-white text-xs tracking-[0.2em] uppercase" onClick={e => e.stopPropagation()}>
+            <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-5">Classic</h1>
+            <p className="type-body text-white/75 mb-7">Reserved for the exceptional.</p>
+            <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
               <span className="border-b border-white/50 pb-px">Explore</span>
               <span className="arrow">←</span>
             </a>
@@ -79,7 +73,7 @@ export default function HeroSplit() {
         </div>
       </div>
 
-      {/* SIGNATURE — clipped to right of divider */}
+      {/* SIGNATURE */}
       <div
         className="absolute inset-0"
         style={{
@@ -94,11 +88,9 @@ export default function HeroSplit() {
           style={{ opacity: signatureVisible ? 1 : 0, pointerEvents: signatureVisible ? "auto" : "none" }}
         >
           <div>
-            <h1 className="text-white text-6xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              Signature
-            </h1>
-            <p className="text-white/75 text-sm mb-6">Selected for everyday luxury.</p>
-            <a href="#" className="arrow-link flex items-center gap-3 justify-end text-white text-xs tracking-[0.2em] uppercase" onClick={e => e.stopPropagation()}>
+            <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-5">Signature</h1>
+            <p className="type-body text-white/75 mb-7">Selected for everyday luxury.</p>
+            <a href="#" className="arrow-link type-button flex items-center gap-3 justify-end text-white" onClick={e => e.stopPropagation()}>
               <span className="border-b border-white/50 pb-px">Explore</span>
               <span className="arrow">→</span>
             </a>
@@ -106,7 +98,7 @@ export default function HeroSplit() {
         </div>
       </div>
 
-      {/* DIVIDER LINE */}
+      {/* DIVIDER */}
       <div
         className="absolute top-0 bottom-0 z-20 flex items-center justify-center"
         style={{ left: `${split}%`, transform: "translateX(-50%)", transition: dragging ? "none" : "left 0.05s ease-out" }}

@@ -25,41 +25,27 @@ export default function ProjectsCarousel() {
       <div className="px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-2 gap-8 mb-10">
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-stone-500 mb-4">Projects</p>
-            <h2 className="text-5xl font-light leading-tight text-stone-900" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-              Spaces that<br />inspire.
-            </h2>
+            <p className="type-label text-stone-500 mb-5">Projects</p>
+            <h2 className="type-large text-stone-900">Spaces that<br />inspire.</h2>
           </div>
           <div className="flex flex-col justify-between">
-            <p className="text-sm text-stone-600 leading-relaxed max-w-xs">
+            <p className="type-intro text-stone-600 max-w-xs">
               We collaborate with leading architects, designers and developers to deliver timeless interiors across hospitality, commercial and residential spaces.
             </p>
-            <div className="flex items-center justify-between mt-4">
-              <a href="#" className="arrow-link text-xs tracking-[0.2em] uppercase text-stone-700 border-b border-stone-400 pb-px">
+            <div className="flex items-center justify-between mt-6">
+              <a href="#" className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
                 View All Projects &nbsp;<span className="arrow">→</span>
               </a>
               <div className="flex gap-2">
-                <button
-                  onClick={prev}
-                  disabled={index === 0}
-                  className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={next}
-                  disabled={index >= max}
-                  className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all"
-                >
-                  ›
-                </button>
+                <button onClick={prev} disabled={index === 0} className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all">‹</button>
+                <button onClick={next} disabled={index >= max} className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all">›</button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Cards track */}
+      {/* Cards */}
       <div className="overflow-hidden">
         <div
           ref={trackRef}
@@ -67,17 +53,14 @@ export default function ProjectsCarousel() {
           style={{ transform: `translateX(calc(-${index} * 25%))` }}
         >
           {projects.map(({ name, type, location, img }) => (
-            <div
-              key={name}
-              className="flex-none w-1/4"
-            >
+            <div key={name} className="flex-none w-1/4">
               <div className="relative h-[420px] flex flex-col justify-end p-6 overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
                 <div className="relative z-10">
-                  <p className="text-white text-base font-light mb-1" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>{name}</p>
-                  <p className="text-white/60 text-xs mb-[2px]">{type}</p>
-                  <p className="text-white/45 text-xs mb-5">{location}</p>
-                  <a href="#" className="arrow-link flex items-center gap-2 text-white text-[10px] tracking-[0.18em] uppercase border-b border-white/25 pb-px w-fit">
+                  <p className="type-product text-white mb-1">{name}</p>
+                  <p className="type-body text-white/60 mb-[2px]">{type}</p>
+                  <p className="type-body text-white/45 mb-5">{location}</p>
+                  <a href="#" className="arrow-link type-button text-white border-b border-white/25 pb-px w-fit">
                     View Project &nbsp;<span className="arrow">→</span>
                   </a>
                 </div>

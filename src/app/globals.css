@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url('https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500&display=swap');
 
 :root {
   --background: #f5f0e8;
@@ -6,6 +7,7 @@
   --gold: #b8934a;
   --cream: #f5f0e8;
   --dark: #111110;
+  --font-neue: 'Neue Montreal', Arial, sans-serif;
 }
 
 @theme inline {
@@ -14,21 +16,96 @@
   --color-gold: var(--gold);
   --color-cream: var(--cream);
   --color-dark: var(--dark);
-  --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, sans-serif;
+  font-family: var(--font-neue);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.8;
 }
 
-h1, h2, h3, h4 {
+/* ── TYPE SCALE ── */
+
+/* Hero Title: Cormorant 96px / 300 */
+.type-hero {
   font-family: var(--font-serif), Georgia, serif;
+  font-size: 96px;
+  font-weight: 300;
+  line-height: 1;
 }
 
-/* Arrow link hover — arrow slides on hover */
+/* Large Statement: Cormorant 72px / 300 */
+.type-large {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 72px;
+  font-weight: 300;
+  line-height: 1.05;
+}
+
+/* Section Heading: Cormorant 48px / 300 */
+.type-heading {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 48px;
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+/* Product / Material Names: Cormorant 36px / 400 */
+.type-product {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 36px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/* Intro Paragraph: Neue Montreal 20px / 400 / lh 1.7 */
+.type-intro {
+  font-family: var(--font-neue);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+/* Body: Neue Montreal 16px / 400 / lh 1.8 */
+.type-body {
+  font-family: var(--font-neue);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.8;
+}
+
+/* Navigation: Neue Montreal 12px / 500 / 0.2em / uppercase */
+.type-nav {
+  font-family: var(--font-neue);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Labels / Eyebrows: Neue Montreal 11px / 500 / 0.25em / uppercase */
+.type-label {
+  font-family: var(--font-neue);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+
+/* Buttons: Neue Montreal 12px / 500 / 0.15em / uppercase */
+.type-button {
+  font-family: var(--font-neue);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Arrow link hover */
 .arrow-link .arrow {
   display: inline-block;
   transition: transform 0.25s ease;
