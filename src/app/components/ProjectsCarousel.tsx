@@ -2,11 +2,11 @@
 import { useRef, useState } from "react";
 
 const projects = [
-  { name: "ETCETERA", type: "Hospitality", location: "Burwood, Sydney", bg: "from-stone-700 to-stone-900" },
-  { name: "Restaurant Project", type: "Hospitality", location: "Dubai", bg: "from-stone-600 to-stone-900" },
-  { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", bg: "from-zinc-600 to-zinc-900" },
-  { name: "Hotel Project", type: "Hospitality", location: "Beirut", bg: "from-neutral-600 to-neutral-900" },
-  { name: "Boutique Project", type: "Commercial", location: "Sydney CBD", bg: "from-stone-700 to-neutral-900" },
+  { name: "ETCETERA", type: "Hospitality", location: "Burwood, Sydney", img: "/project-etcetera.jpg" },
+  { name: "Restaurant Project", type: "Hospitality", location: "Dubai", img: "/project-restaurant.jpg" },
+  { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", img: "/project-residence.jpg" },
+  { name: "Hotel Project", type: "Hospitality", location: "Beirut", img: "/project-hotel.jpg" },
+  { name: "Boutique Project", type: "Commercial", location: "Sydney CBD", img: "/project-boutique.jpg" },
 ];
 
 export default function ProjectsCarousel() {
@@ -66,12 +66,12 @@ export default function ProjectsCarousel() {
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(calc(-${index} * 25%))` }}
         >
-          {projects.map(({ name, type, location, bg }) => (
+          {projects.map(({ name, type, location, img }) => (
             <div
               key={name}
               className="flex-none w-1/4"
             >
-              <div className={`relative h-[420px] bg-gradient-to-b ${bg} flex flex-col justify-end p-6 overflow-hidden group cursor-pointer`}>
+              <div className="relative h-[420px] flex flex-col justify-end p-6 overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
                 <div className="relative z-10">
                   <p className="text-white text-base font-light mb-1" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>{name}</p>

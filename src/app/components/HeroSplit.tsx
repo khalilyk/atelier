@@ -47,8 +47,8 @@ export default function HeroSplit() {
       </header>
 
       {/* CLASSIC — full width base layer (warm beige) */}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#d4c4a0 0%,#a0896e 100%)" }}>
-        <div className="absolute inset-0 bg-black/25" />
+      <div className="absolute inset-0" style={{ backgroundImage: "url('/hero-classic.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
+        <div className="absolute inset-0 bg-black/35" />
         <div className="absolute bottom-16 left-12 z-10">
           <h1 className="text-white text-7xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
             Classic
@@ -66,7 +66,7 @@ export default function HeroSplit() {
         className="absolute inset-0"
         style={{
           clipPath: `inset(0 0 0 ${split}%)`,
-          background: "linear-gradient(135deg,#1e1a16 0%,#0a0908 100%)",
+          backgroundImage: "url('/hero-signature.jpg')", backgroundSize: "cover", backgroundPosition: "center",
           transition: dragging ? "none" : "clip-path 0.05s ease-out",
         }}
       >
