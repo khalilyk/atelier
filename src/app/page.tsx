@@ -43,16 +43,15 @@ export default function Home() {
       <ProjectsCarousel />
 
       {/* ── MATERIALS BANNER ── */}
-      <section className="relative h-48 grid grid-cols-3 overflow-hidden">
-        <div className="bg-gradient-to-r from-stone-200 to-stone-300" />
-        <div className="bg-stone-800 flex flex-col items-center justify-center z-10 gap-3">
+      <section className="relative h-48 overflow-hidden" style={{ backgroundImage: "url('/Atelier_Materials.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
+        <div className="absolute inset-0 bg-black/45" />
+        <div className="relative z-10 h-full flex flex-col items-center justify-center gap-3">
           <p className="type-label text-white/50">Materials</p>
           <p className="type-body text-white text-center">The foundation of every exceptional space.</p>
           <a href="#" className="arrow-link type-button text-white/50 border-b border-white/20 pb-px">
             Explore Materials &nbsp;<span className="arrow">→</span>
           </a>
         </div>
-        <div className="bg-gradient-to-l from-stone-700 to-stone-800" />
       </section>
 
       {/* ── JOURNAL ── */}
