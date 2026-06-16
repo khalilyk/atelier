@@ -15,7 +15,6 @@ export default function Home() {
         <p className="text-3xl md:text-4xl font-light leading-snug max-w-2xl mx-auto text-stone-900" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
           We source, procure and deliver exceptional furniture, lighting and objects for hospitality, commercial and residential spaces.
         </p>
-        <div className="w-px h-12 bg-stone-300 mx-auto mt-10" />
       </section>
 
       {/* ── THE ATELIER DIFFERENCE ── */}
