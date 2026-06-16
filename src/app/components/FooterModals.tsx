@@ -70,13 +70,13 @@ export default function FooterModals() {
 
           {/* Panel */}
           <div
-            className="relative bg-[#0f0e0d] border border-white/10 max-w-xl w-full max-h-[80vh] overflow-y-auto p-10"
+            className="relative bg-[#f5f0e8] border border-stone-200 max-w-xl w-full max-h-[80vh] overflow-y-auto p-10"
             style={{ transition: "opacity 0.4s ease, transform 0.4s ease", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(16px)" }}
           >
             {/* Close */}
             <button
               onClick={closeModal}
-              className="absolute top-6 right-6 type-nav text-stone-500 hover:text-white transition-colors flex items-center gap-2"
+              className="absolute top-6 right-6 type-nav text-stone-400 hover:text-stone-900 transition-colors flex items-center gap-2"
             >
               Close <span className="text-lg leading-none">×</span>
             </button>
@@ -84,7 +84,7 @@ export default function FooterModals() {
             <p className="type-label text-[#b8934a] mb-6">{CONTENT[open].title}</p>
             <div className="space-y-4">
               {CONTENT[open].body.split("\n\n").map((para, i) => (
-                <p key={i} className="type-body text-stone-400">{para}</p>
+                <p key={i} className="type-body text-stone-700">{para}</p>
               ))}
             </div>
           </div>
