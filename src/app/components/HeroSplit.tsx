@@ -59,17 +59,15 @@ export default function HeroSplit() {
       <div className="absolute inset-0" style={{ backgroundImage: "url('/Atelier_Classic.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/35" />
         <div
-          className="absolute inset-0 flex items-center z-10 pl-16 transition-opacity duration-300"
+          className="absolute bottom-20 left-16 z-10 transition-opacity duration-300"
           style={{ opacity: classicVisible ? 1 : 0, pointerEvents: classicVisible ? "auto" : "none" }}
         >
-          <div>
-            <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-5">Classic</h1>
-            <p className="type-body text-white/75 mb-7">Reserved for the exceptional.</p>
-            <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
-              <span className="border-b border-white/50 pb-px">Explore</span>
-              <span className="arrow">←</span>
-            </a>
-          </div>
+          <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Classic</h1>
+          <p className="type-body text-white/80 mb-7">Reserved for the exceptional.</p>
+          <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
+            <span className="border-b border-white/50 pb-px">Explore</span>
+            <span className="arrow">←</span>
+          </a>
         </div>
       </div>
 
@@ -84,17 +82,15 @@ export default function HeroSplit() {
       >
         <div className="absolute inset-0 bg-black/35" />
         <div
-          className="absolute inset-0 flex items-center justify-end z-10 pr-16 text-right transition-opacity duration-300"
+          className="absolute bottom-20 left-16 z-10 transition-opacity duration-300"
           style={{ opacity: signatureVisible ? 1 : 0, pointerEvents: signatureVisible ? "auto" : "none" }}
         >
-          <div>
-            <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-5">Signature</h1>
-            <p className="type-body text-white/75 mb-7">Selected for everyday luxury.</p>
-            <a href="#" className="arrow-link type-button flex items-center gap-3 justify-end text-white" onClick={e => e.stopPropagation()}>
-              <span className="border-b border-white/50 pb-px">Explore</span>
-              <span className="arrow">→</span>
-            </a>
-          </div>
+          <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Signature</h1>
+          <p className="type-body text-white/80 mb-7">Selected for everyday luxury.</p>
+          <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
+            <span className="border-b border-white/50 pb-px">Explore</span>
+            <span className="arrow">→</span>
+          </a>
         </div>
       </div>
 
