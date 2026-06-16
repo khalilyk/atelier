@@ -68,7 +68,7 @@ export default function HeroSplit() {
         className="absolute inset-0"
         style={{
           clipPath: `inset(0 0 0 ${split}%)`,
-          backgroundImage: "url('/hero-signature.jpg')", backgroundSize: "cover", backgroundPosition: "center",
+          backgroundImage: "url('/Atelier_Signature.png')", backgroundSize: "cover", backgroundPosition: "center",
           transition: dragging ? "none" : "clip-path 0.05s ease-out",
         }}
       >
