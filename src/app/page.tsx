@@ -1,6 +1,7 @@
 import Image from "next/image";
 import HeroSplit from "./components/HeroSplit";
 import ProjectsCarousel from "./components/ProjectsCarousel";
+import FooterModals from "./components/FooterModals";
 
 export default function Home() {
   return (
@@ -164,11 +165,7 @@ export default function Home() {
             <p className="type-body text-stone-600">© 2026 Atelier Supply Group Pty Ltd</p>
             <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="text-stone-600 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontSize: "16px", fontWeight: 400, lineHeight: 1.8 }}>made by nn</a>
           </div>
-            <div className="flex items-center gap-3">
-              <a href="#" className="type-nav text-stone-600 hover:text-white transition-colors">Privacy Policy</a>
-              <span className="text-stone-700">|</span>
-              <a href="#" className="type-nav text-stone-600 hover:text-white transition-colors">Terms & Conditions</a>
-            </div>
+            <FooterModals />
           </div>
         </div>
       </footer>
