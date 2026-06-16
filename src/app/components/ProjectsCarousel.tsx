@@ -3,9 +3,9 @@ import { useRef, useState } from "react";
 
 const projects = [
   { name: "ETCETERA", type: "", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
-  { name: "Restaurant Project", type: "", location: "", img: "/Atelier_Second_Project_Card.jpg" },
+  { name: "Restaurant Project", type: "", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg" },
   { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
-  { name: "Hotel Project", type: "", location: "", img: "/Atelier_Fourth_Project_Card.jpg" },
+  { name: "Hotel Project", type: "", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg" },
   { name: "Boutique Project", type: "Commercial", location: "Sydney CBD", img: "/project-boutique.jpg" },
 ];
 
