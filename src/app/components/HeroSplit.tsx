@@ -5,6 +5,7 @@ import { useRef, useState, useCallback } from "react";
 export default function HeroSplit() {
   const [split, setSplit] = useState(50);
   const [dragging, setDragging] = useState(false);
+  const [nearDivider, setNearDivider] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const getSplit = useCallback((clientX: number) => {
@@ -15,21 +16,33 @@ export default function HeroSplit() {
   }, []);
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!ref.current) return;
+    const { left, width } = ref.current.getBoundingClientRect();
+    const mousePct = ((e.clientX - left) / width) * 100;
+    setNearDivider(Math.abs(mousePct - split) < 2.5);
     if (dragging) getSplit(e.clientX);
-  }, [dragging, getSplit]);
+  }, [dragging, getSplit, split]);
 
   const onTouchMove = useCallback((e: React.TouchEvent) => {
     getSplit(e.touches[0].clientX);
   }, [getSplit]);
 
+  // Hide Classic text when divider is in the Classic zone (dragged left)
+  // Hide Signature text when divider is in the Signature zone (dragged right)
+  const classicVisible = split >= 48;
+  const signatureVisible = split <= 52;
+
   return (
     <section
       ref={ref}
-      className="relative h-screen overflow-hidden select-none cursor-col-resize"
+      className="relative h-screen overflow-hidden select-none"
+      style={{ cursor: dragging || nearDivider ? "col-resize" : "default" }}
       onMouseMove={onMouseMove}
-      onMouseDown={() => setDragging(true)}
+      onMouseDown={(e) => {
+        if (nearDivider) setDragging(true);
+      }}
       onMouseUp={() => setDragging(false)}
-      onMouseLeave={() => setDragging(false)}
+      onMouseLeave={() => { setDragging(false); setNearDivider(false); }}
       onTouchMove={onTouchMove}
     >
       {/* NAV — absolute over hero */}
@@ -46,10 +59,13 @@ export default function HeroSplit() {
         </button>
       </header>
 
-      {/* CLASSIC — full width base layer (warm beige) */}
+      {/* CLASSIC — full width base layer */}
       <div className="absolute inset-0" style={{ backgroundImage: "url('/Atelier_Classic.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/35" />
-        <div className="absolute inset-0 flex items-center z-10 pl-16">
+        <div
+          className="absolute inset-0 flex items-center z-10 pl-16 transition-opacity duration-300"
+          style={{ opacity: classicVisible ? 1 : 0, pointerEvents: classicVisible ? "auto" : "none" }}
+        >
           <div>
             <h1 className="text-white text-6xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
               Classic
@@ -73,7 +89,10 @@ export default function HeroSplit() {
         }}
       >
         <div className="absolute inset-0 bg-black/35" />
-        <div className="absolute inset-0 flex items-center justify-end z-10 pr-16 text-right">
+        <div
+          className="absolute inset-0 flex items-center justify-end z-10 pr-16 text-right transition-opacity duration-300"
+          style={{ opacity: signatureVisible ? 1 : 0, pointerEvents: signatureVisible ? "auto" : "none" }}
+        >
           <div>
             <h1 className="text-white text-6xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
               Signature
@@ -93,7 +112,6 @@ export default function HeroSplit() {
         style={{ left: `${split}%`, transform: "translateX(-50%)", transition: dragging ? "none" : "left 0.05s ease-out" }}
       >
         <div className="w-px h-full bg-white/30" />
-        {/* Handle */}
         <div className="absolute w-8 h-8 rounded-full bg-white/10 border border-white/40 backdrop-blur-sm flex items-center justify-center gap-1">
           <span className="text-white/70 text-[10px]">‹</span>
           <span className="text-white/70 text-[10px]">›</span>
