@@ -88,7 +88,7 @@ export default function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#0d0c0b] py-14 px-8">
+      <section className="bg-[#2c1f14] py-14 px-8">
         <div className="max-w-6xl mx-auto grid grid-cols-3 gap-8 items-center">
           <div>
             <h2 className="type-heading text-white">
