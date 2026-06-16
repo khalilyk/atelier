@@ -35,8 +35,8 @@ export default function ProjectsCarousel() {
               We collaborate with leading architects, designers and developers to deliver timeless interiors across hospitality, commercial and residential spaces.
             </p>
             <div className="flex items-center justify-between mt-4">
-              <a href="#" className="text-xs tracking-[0.2em] uppercase text-stone-700 border-b border-stone-400 pb-px">
-                View All Projects &nbsp;→
+              <a href="#" className="arrow-link text-xs tracking-[0.2em] uppercase text-stone-700 border-b border-stone-400 pb-px">
+                View All Projects &nbsp;<span className="arrow">→</span>
               </a>
               <div className="flex gap-2">
                 <button
@@ -77,8 +77,8 @@ export default function ProjectsCarousel() {
                   <p className="text-white text-base font-light mb-1" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>{name}</p>
                   <p className="text-white/60 text-xs mb-[2px]">{type}</p>
                   <p className="text-white/45 text-xs mb-5">{location}</p>
-                  <a href="#" className="flex items-center gap-2 text-white text-[10px] tracking-[0.18em] uppercase border-b border-white/25 pb-px w-fit">
-                    View Project &nbsp;→
+                  <a href="#" className="arrow-link flex items-center gap-2 text-white text-[10px] tracking-[0.18em] uppercase border-b border-white/25 pb-px w-fit">
+                    View Project &nbsp;<span className="arrow">→</span>
                   </a>
                 </div>
               </div>

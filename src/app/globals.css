@@ -27,3 +27,15 @@ body {
 h1, h2, h3, h4 {
   font-family: var(--font-serif), Georgia, serif;
 }
+
+/* Arrow link hover — arrow slides on hover */
+.arrow-link .arrow {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+.arrow-link:hover .arrow {
+  transform: translateX(5px);
+}
+.arrow-link.arrow-left:hover .arrow {
+  transform: translateX(-5px);
+}

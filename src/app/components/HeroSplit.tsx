@@ -49,15 +49,17 @@ export default function HeroSplit() {
       {/* CLASSIC — full width base layer (warm beige) */}
       <div className="absolute inset-0" style={{ backgroundImage: "url('/hero-classic.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/35" />
-        <div className="absolute bottom-16 left-12 z-10">
-          <h1 className="text-white text-7xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-            Classic
-          </h1>
-          <p className="text-white/75 text-sm mb-6">Reserved for the exceptional.</p>
-          <a href="#" className="flex items-center gap-3 text-white text-xs tracking-[0.2em] uppercase" onClick={e => e.stopPropagation()}>
-            <span className="border-b border-white/50 pb-px">Explore</span>
-            <span>←</span>
-          </a>
+        <div className="absolute inset-0 flex items-center z-10 pl-16">
+          <div>
+            <h1 className="text-white text-6xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
+              Classic
+            </h1>
+            <p className="text-white/75 text-sm mb-6">Reserved for the exceptional.</p>
+            <a href="#" className="arrow-link flex items-center gap-3 text-white text-xs tracking-[0.2em] uppercase" onClick={e => e.stopPropagation()}>
+              <span className="border-b border-white/50 pb-px">Explore</span>
+              <span className="arrow">←</span>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -71,15 +73,17 @@ export default function HeroSplit() {
         }}
       >
         <div className="absolute inset-0 bg-black/35" />
-        <div className="absolute bottom-16 right-12 z-10 text-right">
-          <h1 className="text-white text-7xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
-            Signature
-          </h1>
-          <p className="text-white/75 text-sm mb-6">Selected for everyday luxury.</p>
-          <a href="#" className="flex items-center gap-3 justify-end text-white text-xs tracking-[0.2em] uppercase" onClick={e => e.stopPropagation()}>
-            <span className="border-b border-white/50 pb-px">Explore</span>
-            <span>→</span>
-          </a>
+        <div className="absolute inset-0 flex items-center justify-end z-10 pr-16 text-right">
+          <div>
+            <h1 className="text-white text-6xl font-light tracking-[0.22em] uppercase mb-4" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
+              Signature
+            </h1>
+            <p className="text-white/75 text-sm mb-6">Selected for everyday luxury.</p>
+            <a href="#" className="arrow-link flex items-center gap-3 justify-end text-white text-xs tracking-[0.2em] uppercase" onClick={e => e.stopPropagation()}>
+              <span className="border-b border-white/50 pb-px">Explore</span>
+              <span className="arrow">→</span>
+            </a>
+          </div>
         </div>
       </div>
 

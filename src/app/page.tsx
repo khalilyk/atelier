@@ -53,8 +53,8 @@ export default function Home() {
         <div className="bg-stone-800 flex flex-col items-center justify-center z-10">
           <p className="text-[10px] tracking-[0.35em] uppercase text-white/50 mb-2">Materials</p>
           <p className="text-white text-xs tracking-[0.2em] uppercase">The foundation of every exceptional space.</p>
-          <a href="#" className="mt-3 text-[10px] tracking-[0.2em] uppercase text-white/50 border-b border-white/20 pb-px">
-            Explore Materials &nbsp;→
+          <a href="#" className="arrow-link mt-3 text-[10px] tracking-[0.2em] uppercase text-white/50 border-b border-white/20 pb-px">
+            Explore Materials &nbsp;<span className="arrow">→</span>
           </a>
         </div>
         <div className="bg-gradient-to-l from-stone-700 to-stone-800" />
@@ -69,8 +69,8 @@ export default function Home() {
               <h2 className="text-4xl font-light leading-tight text-stone-900 mb-6" style={{ fontFamily: "var(--font-serif), Georgia, serif" }}>
                 Insights. Inspiration.<br />Ideas that shape spaces.
               </h2>
-              <a href="#" className="text-xs tracking-[0.2em] uppercase text-stone-700 border-b border-stone-400 pb-px">
-                View All Articles &nbsp;→
+              <a href="#" className="arrow-link text-xs tracking-[0.2em] uppercase text-stone-700 border-b border-stone-400 pb-px">
+                View All Articles &nbsp;<span className="arrow">→</span>
               </a>
             </div>
             <div className="col-span-3 grid grid-cols-3 gap-4">
@@ -107,9 +107,9 @@ export default function Home() {
           <div className="flex justify-end">
             <a
               href="#"
-              className="border border-white/30 text-white text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-white hover:text-black transition-colors"
+              className="arrow-link border border-white/30 text-white text-xs tracking-[0.2em] uppercase px-8 py-4 hover:bg-white hover:text-black transition-colors"
             >
-              Start Your Project &nbsp;→
+              Start Your Project &nbsp;<span className="arrow">→</span>
             </a>
           </div>
         </div>
