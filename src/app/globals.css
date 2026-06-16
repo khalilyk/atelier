@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500&display=swap');
 
 :root {
   --background: #f5f0e8;
@@ -7,7 +6,7 @@
   --gold: #b8934a;
   --cream: #f5f0e8;
   --dark: #111110;
-  --font-neue: 'Neue Montreal', Arial, sans-serif;
+  --font-neue: var(--font-sans), Arial, sans-serif;
 }
 
 @theme inline {
@@ -30,10 +29,10 @@ body {
 
 /* ── TYPE SCALE ── */
 
-/* Hero Title: Cormorant 96px / 300 */
+/* Hero Title: Cormorant 67px / 300 (96px −30%) */
 .type-hero {
   font-family: var(--font-serif), Georgia, serif;
-  font-size: 96px;
+  font-size: 67px;
   font-weight: 300;
   line-height: 1;
 }

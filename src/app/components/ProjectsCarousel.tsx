@@ -2,7 +2,7 @@
 import { useRef, useState } from "react";
 
 const projects = [
-  { name: "ETCETERA", type: "Hospitality", location: "Burwood, Sydney", img: "/project-etcetera.jpg" },
+  { name: "ETCETERA", type: "Hospitality", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
   { name: "Restaurant Project", type: "Hospitality", location: "Dubai", img: "/project-restaurant.jpg" },
   { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", img: "/project-residence.jpg" },
   { name: "Hotel Project", type: "Hospitality", location: "Beirut", img: "/project-hotel.jpg" },
