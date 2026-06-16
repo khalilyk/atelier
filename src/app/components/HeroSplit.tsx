@@ -47,7 +47,7 @@ export default function HeroSplit() {
       </header>
 
       {/* CLASSIC — full width base layer (warm beige) */}
-      <div className="absolute inset-0" style={{ backgroundImage: "url('/hero-classic.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}>
+      <div className="absolute inset-0" style={{ backgroundImage: "url('/Atelier_Classic.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/35" />
         <div className="absolute inset-0 flex items-center z-10 pl-16">
           <div>
