@@ -129,7 +129,7 @@ export default function Home() {
             </div>
 
             {/* Center: Nav links */}
-            <div className="flex flex-col items-center justify-center gap-5 px-12 border-r border-white/10">
+            <div className="flex flex-col items-start justify-center gap-5 px-12 border-r border-white/10">
               {["Collections", "Classic", "Signature", "Projects", "Brands", "Journal", "Contact"].map((l) => (
                 <a
                   key={l}
