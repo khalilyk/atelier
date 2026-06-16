@@ -2,10 +2,10 @@
 import { useRef, useState } from "react";
 
 const projects = [
-  { name: "ETCETERA", type: "Hospitality", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
-  { name: "Restaurant Project", type: "Hospitality", location: "Dubai", img: "/Atelier_Second_Project_Card.jpg" },
+  { name: "ETCETERA", type: "", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
+  { name: "Restaurant Project", type: "", location: "", img: "/Atelier_Second_Project_Card.jpg" },
   { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
-  { name: "Hotel Project", type: "Hospitality", location: "Beirut", img: "/Atelier_Fourth_Project_Card.jpg" },
+  { name: "Hotel Project", type: "", location: "", img: "/Atelier_Fourth_Project_Card.jpg" },
   { name: "Boutique Project", type: "Commercial", location: "Sydney CBD", img: "/project-boutique.jpg" },
 ];
 
@@ -58,8 +58,8 @@ export default function ProjectsCarousel() {
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
                 <div className="relative z-10">
                   <p className="type-product text-white mb-1">{name}</p>
-                  <p className="type-body text-white/60 mb-[2px]">{type}</p>
-                  <p className="type-body text-white/45 mb-5">{location}</p>
+                  {type && <p className="type-body text-white/60 mb-[2px]">{type}</p>}
+                  {location && <p className="type-body text-white/45 mb-5">{location}</p>}
                   <a href="#" className="arrow-link type-button text-white border-b border-white/25 pb-px w-fit">
                     View Project &nbsp;<span className="arrow">→</span>
                   </a>
