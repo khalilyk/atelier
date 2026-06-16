@@ -27,6 +27,8 @@ export default function HeroSplit() {
     getSplit(e.touches[0].clientX);
   }, [getSplit]);
 
+  // Hide Classic text when divider moves into Classic zone
+  // Hide Signature text when divider moves into Signature zone
   const classicVisible = split >= 48;
   const signatureVisible = split <= 52;
 
@@ -55,23 +57,12 @@ export default function HeroSplit() {
         </button>
       </header>
 
-      {/* CLASSIC */}
+      {/* CLASSIC image */}
       <div className="absolute inset-0" style={{ backgroundImage: "url('/Atelier_Classic.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/35" />
-        <div
-          className="absolute bottom-20 left-16 z-10 transition-opacity duration-300"
-          style={{ opacity: classicVisible ? 1 : 0, pointerEvents: classicVisible ? "auto" : "none" }}
-        >
-          <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Classic</h1>
-          <p className="type-body text-white/80 mb-7">Reserved for the exceptional.</p>
-          <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
-            <span className="border-b border-white/50 pb-px">Explore</span>
-            <span className="arrow">←</span>
-          </a>
-        </div>
       </div>
 
-      {/* SIGNATURE */}
+      {/* SIGNATURE image — clipped */}
       <div
         className="absolute inset-0"
         style={{
@@ -81,17 +72,37 @@ export default function HeroSplit() {
         }}
       >
         <div className="absolute inset-0 bg-black/35" />
-        <div
-          className="absolute bottom-20 left-16 z-10 transition-opacity duration-300"
-          style={{ opacity: signatureVisible ? 1 : 0, pointerEvents: signatureVisible ? "auto" : "none" }}
-        >
-          <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Signature</h1>
-          <p className="type-body text-white/80 mb-7">Selected for everyday luxury.</p>
-          <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
-            <span className="border-b border-white/50 pb-px">Explore</span>
-            <span className="arrow">→</span>
-          </a>
-        </div>
+      </div>
+
+      {/* CLASSIC text — left panel, always unclipped */}
+      <div
+        className="absolute bottom-20 left-16 z-20 transition-opacity duration-300"
+        style={{ opacity: classicVisible ? 1 : 0, pointerEvents: classicVisible ? "auto" : "none" }}
+      >
+        <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Classic</h1>
+        <p className="type-body text-white/80 mb-7">Reserved for the exceptional.</p>
+        <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
+          <span className="border-b border-white/50 pb-px">Explore</span>
+          <span className="arrow">←</span>
+        </a>
+      </div>
+
+      {/* SIGNATURE text — anchored to right panel start, always unclipped */}
+      <div
+        className="absolute bottom-20 z-20 transition-opacity duration-300"
+        style={{
+          left: `calc(${split}% + 4rem)`,
+          opacity: signatureVisible ? 1 : 0,
+          pointerEvents: signatureVisible ? "auto" : "none",
+          transition: `opacity 0.3s, left ${dragging ? "0ms" : "50ms"} ease-out`,
+        }}
+      >
+        <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Signature</h1>
+        <p className="type-body text-white/80 mb-7">Selected for everyday luxury.</p>
+        <a href="#" className="arrow-link type-button flex items-center gap-3 text-white" onClick={e => e.stopPropagation()}>
+          <span className="border-b border-white/50 pb-px">Explore</span>
+          <span className="arrow">→</span>
+        </a>
       </div>
 
       {/* DIVIDER */}
