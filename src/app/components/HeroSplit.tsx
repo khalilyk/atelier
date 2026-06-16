@@ -45,8 +45,11 @@ export default function HeroSplit() {
     >
       {/* NAV */}
       <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-6">
-        <div />
-        <Image src="/Atelier-logo.png" alt="Atelier" width={120} height={48} className="object-contain" priority />
+        <div className="flex-1" />
+        <div className="flex-1 flex justify-center">
+          <Image src="/Atelier-logo.png" alt="Atelier" width={120} height={48} className="object-contain" priority />
+        </div>
+        <div className="flex-1 flex justify-end">
         <button className="group type-nav flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-300">
           Menu
           <span className="flex flex-col gap-[3px]">
@@ -55,6 +58,7 @@ export default function HeroSplit() {
             <span className="block h-px bg-white/70 group-hover:bg-white transition-all duration-300 w-3 group-hover:w-4" />
           </span>
         </button>
+        </div>
       </header>
 
       {/* CLASSIC image */}
