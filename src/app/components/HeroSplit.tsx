@@ -76,7 +76,7 @@ export default function HeroSplit() {
 
       {/* CLASSIC text — left panel, always unclipped */}
       <div
-        className="absolute bottom-20 left-16 z-20 transition-opacity duration-300"
+        className="absolute top-1/2 left-16 z-20 -translate-y-1/2 transition-opacity duration-300"
         style={{ opacity: classicVisible ? 1 : 0, pointerEvents: classicVisible ? "auto" : "none" }}
       >
         <h1 className="type-hero text-white tracking-[0.18em] uppercase mb-4">Classic</h1>
@@ -89,9 +89,11 @@ export default function HeroSplit() {
 
       {/* SIGNATURE text — anchored to right panel start, always unclipped */}
       <div
-        className="absolute bottom-20 z-20 transition-opacity duration-300"
+        className="absolute z-20 transition-opacity duration-300"
         style={{
           left: `calc(${split}% + 4rem)`,
+          top: "50%",
+          transform: "translateY(-50%)",
           opacity: signatureVisible ? 1 : 0,
           pointerEvents: signatureVisible ? "auto" : "none",
           transition: `opacity 0.3s, left ${dragging ? "0ms" : "50ms"} ease-out`,
