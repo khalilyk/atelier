@@ -12,7 +12,7 @@ export default function Home() {
       {/* ── ABOUT ── */}
       <section className="bg-[#f5f0e8] py-24 px-8 text-center">
         <p className="type-label text-stone-500 mb-8">Atelier</p>
-        <p className="type-large text-stone-900 max-w-3xl mx-auto">
+        <p className="type-large text-stone-900 max-w-3xl mx-auto" style={{ fontSize: "54px" }}>
           We source, procure and deliver exceptional furniture, lighting and objects for hospitality, commercial and residential spaces.
         </p>
       </section>
@@ -29,7 +29,7 @@ export default function Home() {
             { n: "03", title: "Hospitality\nFocused", desc: "Built around operational realities and the demands of hospitality." },
             { n: "04", title: "Bespoke\nSolutions", desc: "Tailored pieces and bespoke production to bring your vision to life." },
           ].map(({ n, title, desc }) => (
-            <div key={n} className="col-span-1">
+            <div key={n} className="col-span-1 p-6 -m-6 rounded transition-colors duration-300 hover:bg-white/5">
               <p className="type-label text-stone-500 mb-4">{n}</p>
               <h3 className="type-product text-white mb-4 whitespace-pre-line">{title}</h3>
               <p className="type-body text-stone-400 mb-5">{desc}</p>
@@ -41,6 +41,9 @@ export default function Home() {
 
       {/* ── PROJECTS CAROUSEL ── */}
       <ProjectsCarousel />
+
+      {/* ── BEIGE BREAK ── */}
+      <div className="h-16 bg-[#f5f0e8]" />
 
       {/* ── MATERIALS BANNER ── */}
       <section className="relative h-48 overflow-hidden" style={{ backgroundImage: "url('/Atelier_Materials.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
@@ -157,7 +160,10 @@ export default function Home() {
 
           {/* Bottom bar */}
           <div className="flex justify-between items-center border-t border-white/10 mt-16 py-6">
+            <div>
             <p className="type-body text-stone-600">© 2026 Atelier Supply Group Pty Ltd</p>
+            <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="type-body text-stone-600 hover:text-white transition-colors">Made by NN</a>
+          </div>
             <div className="flex items-center gap-3">
               <a href="#" className="type-nav text-stone-600 hover:text-white transition-colors">Privacy Policy</a>
               <span className="text-stone-700">|</span>
