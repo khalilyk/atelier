@@ -45,7 +45,7 @@ export default function Home() {
       {/* ── MATERIALS BANNER ── */}
       <section className="relative h-48 overflow-hidden" style={{ backgroundImage: "url('/Atelier_Materials.png')", backgroundSize: "cover", backgroundPosition: "center" }}>
         <div className="absolute inset-0 bg-black/45" />
-        <div className="relative z-10 h-full flex flex-col items-center justify-center gap-3">
+        <div className="relative z-10 h-full flex flex-col items-center justify-center gap-3" style={{ paddingTop: "20px" }}>
           <p className="type-label text-white/50">Materials</p>
           <p className="type-body text-white text-center">The foundation of every exceptional space.</p>
           <a href="#" className="arrow-link type-button text-white/50 border-b border-white/20 pb-px">
