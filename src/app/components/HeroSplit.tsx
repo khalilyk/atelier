@@ -44,21 +44,25 @@ export default function HeroSplit() {
       onTouchMove={onTouchMove}
     >
       {/* NAV */}
-      <header className="absolute top-0 left-0 right-0 z-30 flex items-center justify-between px-8 py-6">
-        <div className="flex-1" />
-        <div className="flex-1 flex justify-center">
+      <header className="absolute top-0 left-0 right-0 z-30 flex items-center px-8 py-6">
+        {/* Left nav */}
+        <nav className="flex-1 flex items-center gap-8">
+          {["Classic", "Signature", "How We Work"].map(l => (
+            <a key={l} href="#" className="type-nav text-white/70 hover:text-white transition-colors duration-300">{l}</a>
+          ))}
+        </nav>
+
+        {/* Logo — centre */}
+        <div className="flex justify-center">
           <Image src="/Atelier-logo.png" alt="Atelier" width={120} height={48} className="object-contain" priority />
         </div>
-        <div className="flex-1 flex justify-end">
-        <button className="group type-nav flex items-center gap-2 text-white/70 hover:text-white transition-colors duration-300">
-          Menu
-          <span className="flex flex-col gap-[3px]">
-            <span className="block h-px bg-white/70 group-hover:bg-white transition-all duration-300 w-4 group-hover:w-4" />
-            <span className="block h-px bg-white/70 group-hover:bg-white transition-all duration-300 w-4 group-hover:w-2" />
-            <span className="block h-px bg-white/70 group-hover:bg-white transition-all duration-300 w-3 group-hover:w-4" />
-          </span>
-        </button>
-        </div>
+
+        {/* Right nav */}
+        <nav className="flex-1 flex items-center justify-end gap-8">
+          {["Products", "Source Anything", "About"].map(l => (
+            <a key={l} href="#" className="type-nav text-white/70 hover:text-white transition-colors duration-300">{l}</a>
+          ))}
+        </nav>
       </header>
 
       {/* CLASSIC image */}
