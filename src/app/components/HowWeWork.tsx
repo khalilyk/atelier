@@ -172,13 +172,13 @@ function HStep({ step, index, isLast }: { step: typeof steps[0]; index: number; 
       style={{ opacity: visible ? 1 : 0, transform: visible ? "translateX(0)" : "translateX(24px)", transition: `opacity 0.6s ease, transform 0.6s ease`, transitionDelay: `${index * 80}ms` }}
     >
       {/* Step card */}
-      <div className="w-[280px] flex flex-col">
+      <div className="group/card w-[280px] flex flex-col cursor-default">
         {/* Number */}
-        <p className="type-label text-[#b8934a] mb-4">{step.n}</p>
+        <p className="type-label text-[#b8934a] mb-4 transition-opacity duration-300 group-hover/card:opacity-100 opacity-60">{step.n}</p>
 
         {/* Node + line */}
         <div className="flex items-center mb-6">
-          <div className="w-12 h-12 rounded-full border border-[#b8934a]/50 bg-[#b8934a]/10 text-[#b8934a] flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 rounded-full border border-[#b8934a]/50 bg-[#b8934a]/10 text-[#b8934a] flex items-center justify-center shrink-0 transition-all duration-300 group-hover/card:bg-[#b8934a]/25 group-hover/card:border-[#b8934a] group-hover/card:scale-110 group-hover/card:shadow-[0_0_20px_rgba(184,147,74,0.2)]">
             {step.icon}
           </div>
           {!isLast && (
@@ -189,8 +189,8 @@ function HStep({ step, index, isLast }: { step: typeof steps[0]; index: number; 
         </div>
 
         {/* Text */}
-        <h3 className="type-product text-white mb-2 pr-8" style={{ fontSize: "clamp(16px, 1.5vw, 22px)" }}>{step.title}</h3>
-        <p className="type-body text-stone-500 pr-8" style={{ fontSize: "14px", lineHeight: 1.7 }}>{step.desc}</p>
+        <h3 className="type-product text-white mb-2 pr-8 transition-colors duration-300 group-hover/card:text-[#b8934a]" style={{ fontSize: "clamp(16px, 1.5vw, 22px)" }}>{step.title}</h3>
+        <p className="type-body text-stone-500 pr-8 transition-colors duration-300 group-hover/card:text-stone-300" style={{ fontSize: "14px", lineHeight: 1.7 }}>{step.desc}</p>
       </div>
     </div>
   );
