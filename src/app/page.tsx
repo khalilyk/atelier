@@ -125,7 +125,7 @@ export default function Home() {
 
             {/* Nav links */}
             <div className="flex flex-col items-start justify-center gap-5 px-12 border-r border-white/10">
-              {["Collections", "Classic", "Signature", "Projects", "Brands", "Journal", "Contact"].map((l) => (
+              {["Classic", "Signature", "How We Work", "Products", "Source Anything", "About", "Journal", "Contact"].map((l) => (
                 <a key={l} href="#" className="type-nav text-stone-300 hover:text-[#b8934a] transition-colors">{l}</a>
               ))}
             </div>
