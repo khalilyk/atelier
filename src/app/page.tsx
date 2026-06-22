@@ -127,14 +127,14 @@ export default function Home() {
             </div>
 
             {/* Nav links */}
-            <div className="flex flex-col items-start gap-4 md:gap-5 md:px-12 md:border-r md:border-white/10 md:justify-center">
+            <div className="flex flex-col items-center md:items-start gap-4 md:gap-5 md:px-12 md:border-r md:border-white/10 md:justify-center">
               {["Classic", "Signature", "How We Work", "Products", "Source Anything", "About", "Journal", "Contact"].map((l) => (
                 <a key={l} href="#" className="type-nav text-stone-300 hover:text-[#b8934a] transition-colors">{l}</a>
               ))}
             </div>
 
             {/* Contact */}
-            <div className="flex flex-col justify-center md:pl-12">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left justify-center md:pl-12">
               <p className="type-label text-[#b8934a] mb-5">Contact</p>
               <p className="type-body text-white mb-4">Level 1, Suite X<br />Revesby NSW 2212</p>
               <div className="w-8 h-px bg-white/20 mb-4" />
@@ -163,7 +163,7 @@ export default function Home() {
           </div>
 
           {/* Bottom bar */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-center border-t border-white/10 mt-12 md:mt-16 py-6 gap-4">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center items-center text-center md:text-left border-t border-white/10 mt-12 md:mt-16 py-6 gap-4">
             <div>
               <p className="type-body text-stone-600">© 2026 Atelier Supply Group Pty Ltd</p>
               <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="text-stone-600 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontSize: "16px", fontWeight: 400, lineHeight: 1.8 }}>made by nn</a>
