@@ -3,6 +3,7 @@ import HeroSplit from "./components/HeroSplit";
 import ProjectsCarousel from "./components/ProjectsCarousel";
 import FooterModals from "./components/FooterModals";
 import AtelierDifference from "./components/AtelierDifference";
+import HowWeWork from "./components/HowWeWork";
 
 export default function Home() {
   return (
@@ -24,6 +25,9 @@ export default function Home() {
 
       {/* ── PROJECTS CAROUSEL ── */}
       <ProjectsCarousel />
+
+      {/* ── HOW WE WORK ── */}
+      <HowWeWork />
 
       {/* ── BEIGE BREAK ── */}
       <div className="h-16 bg-[#f5f0e8]" />
