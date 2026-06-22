@@ -11,32 +11,35 @@ export default function Home() {
       <HeroSplit />
 
       {/* ── ABOUT ── */}
-      <section className="bg-[#f5f0e8] py-24 px-8 text-center">
+      <section className="bg-[#f5f0e8] py-16 md:py-24 px-6 md:px-8 text-center">
         <p className="type-label text-stone-500 mb-8">Atelier</p>
-        <p className="type-large text-stone-900 max-w-3xl mx-auto" style={{ fontSize: "54px" }}>
+        <p className="type-large text-stone-900 max-w-3xl mx-auto" style={{ fontSize: "clamp(28px, 4vw, 54px)" }}>
           We source, procure and deliver exceptional furniture, lighting and objects for commercial and residential spaces.
         </p>
       </section>
 
       {/* ── THE ATELIER DIFFERENCE ── */}
-      <section className="bg-[#111110] py-16 px-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-5 gap-8">
-          <div className="col-span-1 flex items-start pt-1">
-            <p className="type-label text-stone-500 leading-relaxed">The Atelier<br />Difference</p>
-          </div>
-          {[
-            { n: "01", title: "Curated\nGlobally", desc: "Access to leading manufacturers and emerging makers worldwide." },
-            { n: "02", title: "Delivered\nEnd-to-End", desc: "From quotation through to delivery, we manage every detail." },
-            { n: "03", title: "Focused on\nQuality", desc: "Built around operational realities and the demands of exceptional spaces." },
-            { n: "04", title: "Bespoke\nSolutions", desc: "Tailored pieces and bespoke production to bring your vision to life." },
-          ].map(({ n, title, desc }) => (
-            <div key={n} className="col-span-1 p-6 -m-6 rounded transition-colors duration-300 hover:bg-white/5">
-              <p className="type-label text-stone-500 mb-4">{n}</p>
-              <h3 className="type-product text-white mb-4 whitespace-pre-line">{title}</h3>
-              <p className="type-body text-stone-400 mb-5">{desc}</p>
-              <span className="text-stone-500 text-lg">+</span>
+      <section className="bg-[#111110] py-16 px-6 md:px-8">
+        <div className="max-w-6xl mx-auto">
+          <p className="type-label text-stone-500 mb-10 md:hidden">The Atelier Difference</p>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-8">
+            <div className="hidden md:flex col-span-1 items-start pt-1">
+              <p className="type-label text-stone-500 leading-relaxed">The Atelier<br />Difference</p>
             </div>
-          ))}
+            {[
+              { n: "01", title: "Curated\nGlobally", desc: "Access to leading manufacturers and emerging makers worldwide." },
+              { n: "02", title: "Delivered\nEnd-to-End", desc: "From quotation through to delivery, we manage every detail." },
+              { n: "03", title: "Focused on\nQuality", desc: "Built around operational realities and the demands of exceptional spaces." },
+              { n: "04", title: "Bespoke\nSolutions", desc: "Tailored pieces and bespoke production to bring your vision to life." },
+            ].map(({ n, title, desc }) => (
+              <div key={n} className="md:col-span-1 md:p-6 md:-m-6 rounded transition-colors duration-300 hover:bg-white/5">
+                <p className="type-label text-stone-500 mb-4">{n}</p>
+                <h3 className="type-product text-white mb-4 whitespace-pre-line" style={{ fontSize: "clamp(22px, 3vw, 36px)" }}>{title}</h3>
+                <p className="type-body text-stone-400 mb-5">{desc}</p>
+                <span className="text-stone-500 text-lg">+</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -59,19 +62,19 @@ export default function Home() {
       </section>
 
       {/* ── JOURNAL ── */}
-      <section className="bg-[#f5f0e8] py-16 px-8">
+      <section className="bg-[#f5f0e8] py-16 px-6 md:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-5 gap-8">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-10 md:gap-8">
+            <div className="md:col-span-2">
               <p className="type-label text-stone-500 mb-6">Journal</p>
-              <h2 className="type-large text-stone-900 mb-8">
+              <h2 className="type-large text-stone-900 mb-8" style={{ fontSize: "clamp(32px, 4vw, 72px)" }}>
                 Insights. Inspiration.<br />Ideas that shape spaces.
               </h2>
               <a href="#" className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
                 View All Articles &nbsp;<span className="arrow">→</span>
               </a>
             </div>
-            <div className="col-span-3 grid grid-cols-3 gap-4">
+            <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-4">
               {[
                 { title: "Design Notes", desc: "Timeless materials and considered details." },
                 { title: "Project Spotlight", desc: "An inside look at our latest projects." },
@@ -79,7 +82,7 @@ export default function Home() {
               ].map(({ title, desc }) => (
                 <div key={title}>
                   <div className="h-36 bg-gradient-to-b from-stone-400 to-stone-600 mb-4" />
-                  <p className="type-product text-stone-900 mb-2">{title}</p>
+                  <p className="type-product text-stone-900 mb-2" style={{ fontSize: "clamp(20px, 2.5vw, 36px)" }}>{title}</p>
                   <p className="type-body text-stone-500">{desc}</p>
                 </div>
               ))}
@@ -89,20 +92,20 @@ export default function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="bg-[#2c1f14] py-14 px-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-3 gap-8 items-center">
+      <section className="bg-[#2c1f14] py-14 px-6 md:px-8">
+        <div className="max-w-6xl mx-auto flex flex-col md:grid md:grid-cols-3 gap-8 md:items-center">
           <div>
-            <h2 className="type-heading text-white">
+            <h2 className="type-heading text-white" style={{ fontSize: "clamp(28px, 3.5vw, 48px)" }}>
               Creating something<br />extraordinary?
             </h2>
           </div>
-          <div className="flex items-stretch">
-            <div className="w-px bg-white/15 mr-8" />
-            <p className="type-intro text-stone-400">
+          <div className="flex items-start md:items-stretch">
+            <div className="w-px bg-white/15 mr-6 md:mr-8 shrink-0" />
+            <p className="type-intro text-stone-400" style={{ fontSize: "clamp(16px, 1.5vw, 20px)" }}>
               Whether it's a single room or an entire building, we help bring your vision to life with precision and care.
             </p>
           </div>
-          <div className="flex justify-end">
+          <div className="flex md:justify-end">
             <a href="#" className="arrow-link type-button border border-white/30 text-white px-8 py-4 hover:bg-white hover:text-black transition-colors">
               Start Your Project &nbsp;<span className="arrow">→</span>
             </a>
@@ -111,27 +114,27 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="bg-[#0a0908] px-8 pt-20 pb-0">
+      <footer className="bg-[#0a0908] px-6 md:px-8 pt-16 md:pt-20 pb-0">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-3 gap-0">
+          <div className="flex flex-col md:grid md:grid-cols-3 gap-12 md:gap-0">
 
             {/* Logo + tagline */}
-            <div className="flex flex-col items-center justify-center text-center pr-12 border-r border-white/10">
+            <div className="flex flex-col items-center text-center md:pr-12 md:border-r md:border-white/10">
               <Image src="/Atelier-logo.png" alt="Atelier" width={160} height={64} className="object-contain mb-5" />
-              <p className="type-intro text-stone-400">
+              <p className="type-intro text-stone-400" style={{ fontSize: "clamp(14px, 1.5vw, 20px)" }}>
                 Furniture, lighting and objects<br />for exceptional spaces.
               </p>
             </div>
 
             {/* Nav links */}
-            <div className="flex flex-col items-start justify-center gap-5 px-12 border-r border-white/10">
+            <div className="flex flex-col items-start gap-4 md:gap-5 md:px-12 md:border-r md:border-white/10 md:justify-center">
               {["Classic", "Signature", "How We Work", "Products", "Source Anything", "About", "Journal", "Contact"].map((l) => (
                 <a key={l} href="#" className="type-nav text-stone-300 hover:text-[#b8934a] transition-colors">{l}</a>
               ))}
             </div>
 
             {/* Contact */}
-            <div className="flex flex-col justify-center pl-12">
+            <div className="flex flex-col justify-center md:pl-12">
               <p className="type-label text-[#b8934a] mb-5">Contact</p>
               <p className="type-body text-white mb-4">Level 1, Suite X<br />Revesby NSW 2212</p>
               <div className="w-8 h-px bg-white/20 mb-4" />
@@ -160,11 +163,11 @@ export default function Home() {
           </div>
 
           {/* Bottom bar */}
-          <div className="flex justify-between items-center border-t border-white/10 mt-16 py-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center border-t border-white/10 mt-12 md:mt-16 py-6 gap-4">
             <div>
-            <p className="type-body text-stone-600">© 2026 Atelier Supply Group Pty Ltd</p>
-            <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="text-stone-600 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontSize: "16px", fontWeight: 400, lineHeight: 1.8 }}>made by nn</a>
-          </div>
+              <p className="type-body text-stone-600">© 2026 Atelier Supply Group Pty Ltd</p>
+              <a href="https://thisisnn.com" target="_blank" rel="noopener noreferrer" className="text-stone-600 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontSize: "16px", fontWeight: 400, lineHeight: 1.8 }}>made by nn</a>
+            </div>
             <FooterModals />
           </div>
         </div>

@@ -22,17 +22,17 @@ export default function ProjectsCarousel() {
   return (
     <section className="bg-[#f5f0e8] pt-16 pb-0">
       {/* Header */}
-      <div className="px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 gap-8 mb-10">
+      <div className="px-6 md:px-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
           <div>
             <p className="type-label text-stone-500 mb-5">Projects</p>
-            <h2 className="type-large text-stone-900">Spaces that<br />inspire.</h2>
+            <h2 className="type-large text-stone-900" style={{ fontSize: "clamp(36px, 5vw, 72px)" }}>Spaces that<br />inspire.</h2>
           </div>
-          <div className="flex flex-col justify-between">
-            <p className="type-intro text-stone-600 max-w-xs">
+          <div className="flex flex-col justify-between gap-6">
+            <p className="type-intro text-stone-600 max-w-xs" style={{ fontSize: "clamp(15px, 1.5vw, 20px)" }}>
               We collaborate with leading architects, designers and developers to deliver timeless interiors across commercial and residential spaces.
             </p>
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex items-center justify-between">
               <a href="#" className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
                 View All Projects &nbsp;<span className="arrow">→</span>
               </a>
@@ -45,22 +45,20 @@ export default function ProjectsCarousel() {
         </div>
       </div>
 
-      {/* Cards */}
-      <div className="overflow-hidden">
+      {/* Cards — native scroll snap on mobile, JS-driven on desktop */}
+      <div className="md:overflow-hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide">
         <div
           ref={trackRef}
-          className="flex transition-transform duration-500 ease-in-out"
+          className="flex md:transition-transform md:duration-500 md:ease-in-out"
           style={{ transform: `translateX(calc(-${index} * 25%))` }}
         >
-          {projects.map(({ name, type, location, img }) => (
-            <div key={name} className="flex-none w-1/4">
+          {projects.map(({ name, location, img }) => (
+            <div key={name} className="flex-none w-[85vw] md:w-1/4 snap-start">
               <div className="relative h-[420px] overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
-                {/* Title + location */}
                 <div className="absolute bottom-6 left-6 right-6 z-10">
-                  <p className="type-product text-white mb-1">{name}</p>
+                  <p className="type-product text-white mb-1" style={{ fontSize: "clamp(20px, 2.5vw, 36px)" }}>{name}</p>
                   {location && <p className="type-body text-white/45">{location}</p>}
-                  {/* View Project — visible only on hover */}
                   <a href="#" className="arrow-link type-button text-white border-b border-white/25 pb-px w-fit mt-4 inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     View Project &nbsp;<span className="arrow">→</span>
                   </a>
