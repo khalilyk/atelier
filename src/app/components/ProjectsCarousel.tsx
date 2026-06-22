@@ -2,10 +2,10 @@
 import { useRef, useState, useEffect } from "react";
 
 const projects = [
-  { name: "ETCETERA", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
-  { name: "Restaurant Project", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg" },
-  { name: "Residence Project", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
-  { name: "Hotel Project", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg" },
+  { name: "Building 1", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
+  { name: "Building 2", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg" },
+  { name: "Building 3", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
+  { name: "Building 4", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg" },
   { name: "Boutique Project", location: "Sydney CBD", img: "/project-boutique.jpg" },
 ];
 
