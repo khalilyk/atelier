@@ -1,20 +1,29 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const projects = [
-  { name: "ETCETERA", type: "", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
-  { name: "Restaurant Project", type: "", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg" },
-  { name: "Residence Project", type: "Residential", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
-  { name: "Hotel Project", type: "", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg" },
-  { name: "Boutique Project", type: "Commercial", location: "Sydney CBD", img: "/project-boutique.jpg" },
+  { name: "ETCETERA", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
+  { name: "Restaurant Project", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg" },
+  { name: "Residence Project", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
+  { name: "Hotel Project", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg" },
+  { name: "Boutique Project", location: "Sydney CBD", img: "/project-boutique.jpg" },
 ];
 
 export default function ProjectsCarousel() {
   const [index, setIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
-  const visible = 4;
-  const max = projects.length - visible;
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const visibleCount = isMobile ? 1 : 4;
+  const max = projects.length - visibleCount;
+  const cardPct = isMobile ? 100 : 25;
 
   const prev = () => setIndex(i => Math.max(i - 1, 0));
   const next = () => setIndex(i => Math.min(i + 1, max));
@@ -45,15 +54,15 @@ export default function ProjectsCarousel() {
         </div>
       </div>
 
-      {/* Cards — native scroll snap on mobile, JS-driven on desktop */}
-      <div className="md:overflow-hidden overflow-x-auto snap-x snap-mandatory scrollbar-hide">
+      {/* Cards */}
+      <div className="overflow-hidden">
         <div
           ref={trackRef}
-          className="flex md:transition-transform md:duration-500 md:ease-in-out"
-          style={{ transform: `translateX(calc(-${index} * 25%))` }}
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(calc(-${index} * ${cardPct}%))` }}
         >
           {projects.map(({ name, location, img }) => (
-            <div key={name} className="flex-none w-[85vw] md:w-1/4 snap-start">
+            <div key={name} className="flex-none w-full md:w-1/4">
               <div className="relative h-[420px] overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
                 <div className="absolute bottom-6 left-6 right-6 z-10">
@@ -68,6 +77,15 @@ export default function ProjectsCarousel() {
           ))}
         </div>
       </div>
+
+      {/* Mobile dot indicators */}
+      {isMobile && (
+        <div className="flex justify-center gap-2 py-4">
+          {projects.map((_, i) => (
+            <button key={i} onClick={() => setIndex(i)} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? "bg-stone-700" : "bg-stone-300"}`} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
