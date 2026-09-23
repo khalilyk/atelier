@@ -18,6 +18,46 @@
   --font-serif: var(--font-serif);
 }
 
+html {
+  /* `clip` (not `hidden`) stops horizontal overflow WITHOUT turning <html> into
+     a scroll container - `hidden` here silently breaks `position: sticky`
+     everywhere on the site. */
+  overflow-x: clip;
+}
+
+/* Custom light-brown arrow cursor, forced site-wide at one consistent size
+   (overrides Tailwind cursor-* utilities and inline cursor styles). */
+*, *::before, *::after {
+  cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyNCcgaGVpZ2h0PScyNCcgdmlld0JveD0nMCAwIDI0IDI0Jz48cGF0aCBkPSdNNCAyIEw0IDIwIEw5IDE1IEwxMiAyMS41IEwxNC42IDIwLjQgTDExLjYgMTQgTDE4IDE0IFonIGZpbGw9JyNiMDhkNWInIHN0cm9rZT0nI2ZmZjRlNicgc3Ryb2tlLXdpZHRoPScxJy8+PC9zdmc+") 4 2, auto !important;
+}
+
+/* Keep a text caret where people type. */
+input:not([type="button"]):not([type="submit"]):not([type="checkbox"]):not([type="radio"]),
+textarea,
+[contenteditable="true"] {
+  cursor: text !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom-styled select with a padded chevron (not stuck to the border). */
+.select-arrow {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%238a7d70' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 44px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -69,10 +109,10 @@ body {
   line-height: 1.7;
 }
 
-/* Body: Neue Montreal 16px / 400 / lh 1.8 */
+/* Body: Neue Montreal 15px / 400 / lh 1.8 */
 .type-body {
   font-family: var(--font-neue);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   line-height: 1.8;
 }
@@ -118,3 +158,8 @@ body {
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes videoZoom {
+  from { transform: scale(1); }
+  to   { transform: scale(1.12); }
+}

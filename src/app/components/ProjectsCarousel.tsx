@@ -1,18 +1,30 @@
 "use client";
+import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
+import { projectMeta, type Project } from "@/lib/projects";
+import { useT } from "./ContentProvider";
 
-const projects = [
-  { name: "Building 1", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg" },
-  { name: "Building 2", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg" },
-  { name: "Building 3", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg" },
-  { name: "Building 4", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg" },
-  { name: "Boutique Project", location: "Sydney CBD", img: "/project-boutique.jpg" },
+type Card = { name: string; location: string; img: string; href: string };
+
+// Shown until real projects are published, so the homepage is never empty.
+const PLACEHOLDERS: Card[] = [
+  { name: "Building 1", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg", href: "/projects" },
+  { name: "Building 2", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg", href: "/projects" },
+  { name: "Building 3", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg", href: "/projects" },
+  { name: "Building 4", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg", href: "/projects" },
+  { name: "Boutique Project", location: "Sydney CBD", img: "/project-boutique.jpg", href: "/projects" },
 ];
 
-export default function ProjectsCarousel() {
+export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) {
+  const t = useT();
+  const viewAll = t("home.projects.link") || "/projects";
+  const projects: Card[] = items.length
+    ? items.map((p) => ({ name: p.title, location: projectMeta(p), img: p.coverImage, href: `/projects/${p.slug}` }))
+    : PLACEHOLDERS;
   const [index, setIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -28,8 +40,16 @@ export default function ProjectsCarousel() {
   const prev = () => setIndex(i => Math.max(i - 1, 0));
   const next = () => setIndex(i => Math.min(i + 1, max));
 
+  const onTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) { if (diff > 0) next(); else prev(); }
+    touchStartX.current = null;
+  };
+
   return (
-    <section className="bg-[#f5f0e8] pt-16 pb-0">
+    <section className="bg-[#ede8df] pt-16 pb-0">
       {/* Header */}
       <div className="px-6 md:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
@@ -42,9 +62,9 @@ export default function ProjectsCarousel() {
               We collaborate with leading architects, designers and developers to deliver timeless interiors across commercial and residential spaces.
             </p>
             <div className="flex items-center justify-between">
-              <a href="#" className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
+              <Link href={viewAll} className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
                 View All Projects &nbsp;<span className="arrow">→</span>
-              </a>
+              </Link>
               <div className="flex gap-2">
                 <button onClick={prev} disabled={index === 0} className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all">‹</button>
                 <button onClick={next} disabled={index >= max} className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all">›</button>
@@ -55,25 +75,25 @@ export default function ProjectsCarousel() {
       </div>
 
       {/* Cards */}
-      <div className="overflow-hidden">
+      <div className="overflow-hidden" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ touchAction: "pan-y" }}>
         <div
           ref={trackRef}
           className="flex transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(calc(-${index} * ${cardPct}%))` }}
         >
-          {projects.map(({ name, location, img }) => (
-            <div key={name} className="flex-none w-full md:w-1/4">
-              <div className="relative h-[420px] overflow-hidden group cursor-pointer" style={{ backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" }}>
+          {projects.map(({ name, location, img, href }) => (
+            <Link key={name} href={href} className="flex-none w-full md:w-1/4">
+              <div className="relative h-[420px] overflow-hidden group cursor-pointer bg-stone-300" style={img ? { backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
                 <div className="absolute bottom-6 left-6 right-6 z-10">
                   <p className="type-product text-white mb-1" style={{ fontSize: "clamp(20px, 2.5vw, 36px)" }}>{name}</p>
                   {location && <p className="type-body text-white/45">{location}</p>}
-                  <a href="#" className="arrow-link type-button text-white border-b border-white/25 pb-px w-fit mt-4 inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="arrow-link type-button text-white border-b border-white/25 pb-px w-fit mt-4 inline-block opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     View Project &nbsp;<span className="arrow">→</span>
-                  </a>
+                  </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
