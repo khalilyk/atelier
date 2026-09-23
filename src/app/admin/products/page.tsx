@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ImagePicker from "../components/ImagePicker";
 import HotspotEditor from "../components/HotspotEditor";
+import SearchListing from "../components/SearchListing";
 import { hasHotspots, type HotspotBlock } from "@/lib/hotspots";
 import BlockList from "../components/BlockList";
 import { PRODUCT_SECTION_FIELDS, isProductKey, productKind, productValue } from "@/lib/product-blocks";
@@ -336,6 +337,17 @@ export default function ProductsAdmin() {
                     />
                   </div>
                 )}
+
+                {/* How this product appears on Google */}
+                <div className="rounded-2xl border border-stone-200 p-4">
+                  <p className="text-xs uppercase tracking-widest text-stone-500 font-semibold mb-3">Search listing</p>
+                  <SearchListing
+                    path={`/classic/${selected ?? ""}`}
+                    name={(form.name as string) || (selected ?? "")}
+                    fallbackTitle={(form.name as string) || (selected ?? "")}
+                    fallbackDescription={(form.description as string) || (form.tagline as string) || ""}
+                  />
+                </div>
 
                 {/* Everything the blocks above already cover, as plain fields. */}
                 <div className="rounded-2xl border border-stone-200 overflow-hidden">

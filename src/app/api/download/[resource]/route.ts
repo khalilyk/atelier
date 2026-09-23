@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
 import { RESOURCES, verifyToken } from "@/lib/download-token";
+import { documents } from "@/lib/admin-store";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,24 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ reso
   }
 
   try {
+    // A replacement uploaded from the Media Library wins over the bundled file.
+    const replaced = await documents.get(resource).catch(() => null);
+    if (replaced?.url) {
+      const upstream = await fetch(replaced.url, { cache: "no-store" });
+      if (upstream.ok) {
+        const buf = new Uint8Array(await upstream.arrayBuffer());
+        return new NextResponse(buf, {
+          headers: {
+            "Content-Type": "application/pdf",
+            "Content-Length": String(buf.byteLength),
+            "Content-Disposition": `attachment; filename="${res.filename}"`,
+            "Cache-Control": "private, no-store, max-age=0",
+          },
+        });
+      }
+      console.error("Replaced download unavailable, using the bundled file", replaced.url);
+    }
+
     const file = path.join(process.cwd(), "private", "downloads", res.file);
     const data = await fs.readFile(file);
     return new NextResponse(new Uint8Array(data), {

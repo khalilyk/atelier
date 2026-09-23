@@ -306,14 +306,20 @@ function WindowsOptions({ t }: { t: T }) {
 
 function FamilyGroup({ fam, famProducts, category, index }: { fam: typeof WD_FAMILIES[0]; famProducts: { slug: string; data: ProductData }[]; category: string; index: number }) {
   const multiple = famProducts.length > 1;
+  // The whole family is "coming soon" only when every system in it is.
+  const soon = famProducts.every((p) => p.data.comingSoon);
   const href = multiple ? `/classic/${category}/series/${fam.slug}` : `/classic/${category}/${famProducts[0].slug}`;
-  const cta = multiple ? `View all ${famProducts.length} systems` : "View the system";
+  const ready = famProducts.filter((p) => !p.data.comingSoon).length;
+  const cta = multiple ? `View all ${ready} system${ready === 1 ? "" : "s"}` : "View the system";
   const imageRight = index % 2 === 1;
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 border-b border-stone-200 last:border-b-0" style={{ minHeight: "500px" }}>
       <div className={`relative min-h-[300px] md:min-h-0 ${imageRight ? "md:order-2" : ""}`}>
         <Image src={famProducts[0].data.heroImg} alt={fam.name} fill className="object-cover" />
         <div className="absolute inset-0 bg-black/8" />
+        {soon && (
+          <span className="absolute top-5 left-5 z-10 type-label bg-[#2c2620]/85 text-[#e9c98a] px-2.5 py-1 rounded-full" style={{ fontSize: "9.5px", letterSpacing: "0.14em" }}>COMING SOON</span>
+        )}
       </div>
       <div className={`flex flex-col justify-center px-8 md:px-16 py-16 md:py-24 ${index % 2 ? "bg-[#ede8df]" : "bg-[#f5f0e8]"} ${imageRight ? "md:order-1" : ""}`}>
         <div className="flex items-center gap-4 mb-7">
@@ -322,7 +328,11 @@ function FamilyGroup({ fam, famProducts, category, index }: { fam: typeof WD_FAM
         </div>
         <h3 className="type-large text-stone-900 mb-6" style={{ fontSize: "clamp(30px, 3.5vw, 52px)", lineHeight: 1.03 }}>{fam.name}</h3>
         <p className="type-body text-stone-500 mb-9 max-w-md" style={{ lineHeight: 1.9 }}>{fam.desc}</p>
-        <a href={href} className="arrow-link type-button text-stone-500 border-b border-stone-300 pb-px w-fit hover:text-stone-900 transition-colors" style={{ letterSpacing: "0.08em" }}>{cta} &nbsp;<span className="arrow">→</span></a>
+        {soon ? (
+          <span className="type-button text-stone-400 border-b border-stone-300 pb-px w-fit" style={{ letterSpacing: "0.08em" }}>Coming soon</span>
+        ) : (
+          <a href={href} className="arrow-link type-button text-stone-500 border-b border-stone-300 pb-px w-fit hover:text-stone-900 transition-colors" style={{ letterSpacing: "0.08em" }}>{cta} &nbsp;<span className="arrow">→</span></a>
+        )}
       </div>
     </div>
   );

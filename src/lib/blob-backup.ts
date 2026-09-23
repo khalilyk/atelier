@@ -12,13 +12,14 @@ import fs from "fs";
 import path from "path";
 import { list, put, del } from "@vercel/blob";
 import {
-  readStore, writeStore, leads, customCategories, images, submissions, journal, projects, customPages, USE_BLOB, BLOB_TOKEN, DATA_DIR,
+  readStore, writeStore, leads, customCategories, images, submissions, journal, projects, customPages, documents, USE_BLOB, BLOB_TOKEN, DATA_DIR,
   type Lead, type Submission,
 } from "./admin-store";
 import type { CustomCategory } from "./categories";
 import type { JournalPost } from "./journal";
 import type { Project } from "./projects";
 import type { CustomPage } from "./custom-pages";
+import type { DocOverride } from "./admin-store";
 
 const PREFIX = "backups/";
 const BACKUP_DIR = path.join(DATA_DIR, "backups");
@@ -33,7 +34,7 @@ export const DATA_FILES = [
 ] as const;
 
 /** Per-record stores, by scope name. */
-export const COLLECTIONS = ["leads", "categories", "images", "submissions", "journal", "projects", "custom-pages"] as const;
+export const COLLECTIONS = ["leads", "categories", "images", "submissions", "journal", "projects", "custom-pages", "documents"] as const;
 export type Scope = (typeof DATA_FILES)[number] | (typeof COLLECTIONS)[number];
 export const ALL_SCOPES: Scope[] = [...DATA_FILES, ...COLLECTIONS];
 
@@ -55,6 +56,7 @@ async function readScope(scope: Scope): Promise<unknown> {
     case "journal": return await journal.list();
     case "projects": return await projects.list();
     case "custom-pages": return await customPages.list();
+    case "documents": return await documents.list();
     default: return await readStore<unknown>(scope, null);
   }
 }
@@ -94,6 +96,13 @@ async function writeScope(scope: Scope, value: unknown): Promise<void> {
       const keep = new Set(items.map((i) => i.slug));
       for (const existing of await customPages.list()) if (!keep.has(existing.slug)) await customPages.remove(existing.slug);
       for (const item of items) await customPages.put(item);
+      return;
+    }
+    case "documents": {
+      const items = (Array.isArray(value) ? value : []) as DocOverride[];
+      const keep = new Set(items.map((i) => i.resource));
+      for (const existing of await documents.list()) if (!keep.has(existing.resource)) await documents.remove(existing.resource);
+      for (const item of items) await documents.put(item);
       return;
     }
     case "categories": {

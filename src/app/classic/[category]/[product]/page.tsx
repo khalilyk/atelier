@@ -35,6 +35,9 @@ export default async function Page({ params, searchParams }: Props) {
   const preview = (await searchParams).preview === "1";
   const i = await info(category, product);
   if (!i && !preview) notFound();
+  // A product marked "coming soon" has no page yet. Preview still works while
+  // signed in, so it can be checked before it opens.
+  if (i?.data.comingSoon && !preview) notFound();
   const ld = i && !i.comingSoon ? [
     breadcrumbLd([["Home", "/"], ["Classic", "/classic"], [i.label, `/classic/${category}`], [i.data.name, `/classic/${category}/${product}`]]),
     productLd({ name: i.data.name, description: productSummary(i.data), path: `/classic/${category}/${product}`, image: i.data.heroImg || undefined, category: i.label }),

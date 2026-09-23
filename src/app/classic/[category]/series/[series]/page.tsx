@@ -60,23 +60,40 @@ export default async function SeriesPage({ params }: { params: Promise<{ categor
           <span className="type-label text-stone-400">{products.length} systems</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {products.map(({ slug, data }) => (
-            <a key={slug} href={`/classic/${category}/${slug}`} className="group bg-white border border-stone-200 rounded-2xl overflow-hidden flex flex-col hover:shadow-[0_16px_40px_rgba(44,31,20,0.10)] hover:-translate-y-1 transition-all duration-300">
-              <div className="relative w-full aspect-[4/3] overflow-hidden bg-stone-200">
-                <Image src={data.heroImg} alt={data.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
-              </div>
-              <div className="p-6 flex flex-col gap-3 flex-1">
-                <h3 className="type-product text-stone-900 group-hover:text-[#b8934a] transition-colors" style={{ letterSpacing: "0.06em", fontSize: "20px", lineHeight: 1.2 }}>{data.name}</h3>
-                <p className="type-body text-stone-500" style={{ lineHeight: 1.7, fontSize: "13px" }}>{data.tagline}</p>
-                {data.certification && (
-                  <span className="type-label text-stone-400 inline-flex items-center gap-1.5 mt-1" style={{ fontSize: "10.5px", letterSpacing: "0.08em" }}>
-                    <span className="w-1 h-1 rounded-full bg-[#b8934a]" />{data.certification}
-                  </span>
-                )}
-                <span className="arrow-link type-button text-[#b8934a] transition-colors mt-auto pt-1" style={{ letterSpacing: "0.1em" }}>VIEW SYSTEM &nbsp;<span className="arrow">→</span></span>
-              </div>
-            </a>
-          ))}
+          {products.map(({ slug, data }) => {
+            // A system still being prepared is shown, but does not open a page.
+            const soon = !!data.comingSoon;
+            const card = "group bg-white border border-stone-200 rounded-2xl overflow-hidden flex flex-col transition-all duration-300";
+            const inner = (
+              <>
+                <div className="relative w-full aspect-[4/3] overflow-hidden bg-stone-200">
+                  <Image src={data.heroImg} alt={data.name} fill className={`object-cover transition-transform duration-500 ${soon ? "" : "group-hover:scale-105"}`} />
+                  {soon && (
+                    <span className="absolute top-3 left-3 z-10 type-label bg-[#2c2620]/85 text-[#e9c98a] px-2.5 py-1 rounded-full" style={{ fontSize: "9.5px", letterSpacing: "0.14em" }}>COMING SOON</span>
+                  )}
+                </div>
+                <div className="p-6 flex flex-col gap-3 flex-1">
+                  <h3 className={`type-product text-stone-900 transition-colors ${soon ? "" : "group-hover:text-[#b8934a]"}`} style={{ letterSpacing: "0.06em", fontSize: "20px", lineHeight: 1.2 }}>{data.name}</h3>
+                  <p className="type-body text-stone-500" style={{ lineHeight: 1.7, fontSize: "13px" }}>{data.tagline}</p>
+                  {data.certification && (
+                    <span className="type-label text-stone-400 inline-flex items-center gap-1.5 mt-1" style={{ fontSize: "10.5px", letterSpacing: "0.08em" }}>
+                      <span className="w-1 h-1 rounded-full bg-[#b8934a]" />{data.certification}
+                    </span>
+                  )}
+                  {soon ? (
+                    <span className="type-button text-stone-400 mt-auto pt-1" style={{ letterSpacing: "0.1em" }}>Coming soon</span>
+                  ) : (
+                    <span className="arrow-link type-button text-[#b8934a] transition-colors mt-auto pt-1" style={{ letterSpacing: "0.1em" }}>VIEW SYSTEM &nbsp;<span className="arrow">→</span></span>
+                  )}
+                </div>
+              </>
+            );
+            return soon ? (
+              <div key={slug} className={card} aria-disabled>{inner}</div>
+            ) : (
+              <a key={slug} href={`/classic/${category}/${slug}`} className={`${card} hover:shadow-[0_16px_40px_rgba(44,31,20,0.10)] hover:-translate-y-1`}>{inner}</a>
+            );
+          })}
         </div>
       </section>
 

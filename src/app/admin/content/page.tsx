@@ -5,6 +5,10 @@ import ImagePicker from "../components/ImagePicker";
 import BlockList from "../components/BlockList";
 import PreviewFrame from "../components/PreviewFrame";
 import SitePreview from "./SitePreview";
+import SearchListing from "../components/SearchListing";
+import SiteDefaults from "./SiteDefaults";
+
+const SITE_DEFAULTS = "Site defaults";
 import { specFromRegistry } from "@/lib/page-blocks";
 import { PAGE_SECTION_KEYS, SITE_PAGE_BY_GROUP, SITE_PAGES, pageLayoutKey } from "@/lib/page-copy";
 import { sortCustomPages, type CustomPage } from "@/lib/custom-pages";
@@ -109,7 +113,7 @@ export default function ContentAdmin() {
   const editedCount = (group: string) => (groups[group] ?? []).filter(isOverridden).length;
   const sitePage = SITE_PAGE_BY_GROUP[active];
   // Only the site's own pages can be previewed; category wording is edited elsewhere.
-  const preview = showPreview && !!sitePage;
+  const preview = showPreview && !!sitePage && active !== SITE_DEFAULTS;
   const sectionKeys = sitePage ? PAGE_SECTION_KEYS[sitePage.kind] ?? {} : {};
   const placed = new Set(Object.values(sectionKeys).flat());
   const activeFields = (groups[active] ?? []).filter((f) => !placed.has(f.key));
@@ -161,6 +165,13 @@ export default function ContentAdmin() {
             );
           })}
 
+          <button
+            onClick={() => setChosen(SITE_DEFAULTS)}
+            className={`shrink-0 md:w-full text-left px-4 py-2.5 rounded-xl text-sm transition-colors ${active === SITE_DEFAULTS ? "bg-[#b8934a] text-white" : "text-stone-600 hover:bg-stone-100"}`}
+          >
+            {SITE_DEFAULTS}
+          </button>
+
           {/* Pages you created yourself */}
           <div className="md:mt-6 md:pt-4 md:border-t border-stone-200 flex md:flex-col gap-1 shrink-0">
             <p className="hidden md:block text-[10px] uppercase tracking-widest text-stone-400 font-semibold px-4 mb-2">Your pages</p>
@@ -180,6 +191,7 @@ export default function ContentAdmin() {
 
         {/* Active page */}
         <div className={`flex-1 min-w-0 space-y-5 ${preview ? "" : "max-w-3xl"}`}>
+          {active === SITE_DEFAULTS && <SiteDefaults />}
           {preview && (
             <div className="flex items-center gap-3 flex-wrap">
               <select
@@ -187,7 +199,7 @@ export default function ContentAdmin() {
                 onChange={(e) => setChosen(e.target.value)}
                 className="border border-stone-200 bg-white rounded-xl px-4 py-2.5 text-sm text-stone-800 outline-none focus:border-[#b8934a]/60"
               >
-                {groupNames.map((g) => <option key={g} value={g}>{g}</option>)}
+                {[...groupNames, SITE_DEFAULTS].map((g) => <option key={g} value={g}>{g}</option>)}
               </select>
               {ownPages.length > 0 && (
                 <span className="text-[11px] text-stone-400">Your pages are in the list on the left when the preview is off.</span>
@@ -214,6 +226,12 @@ export default function ContentAdmin() {
           {categoryGroup && (
             <div className="bg-[#b8934a]/5 border border-[#b8934a]/20 rounded-2xl px-5 py-4 text-sm text-stone-700">
               This category page is arranged as blocks in <Link href="/admin/categories" className="text-[#b8934a] underline">Categories</Link>. The fields below are its standard wording.
+            </div>
+          )}
+          {sitePage && (
+            <div className="bg-white rounded-2xl border border-stone-100 p-6">
+              <h3 className="text-stone-800 font-semibold text-sm uppercase tracking-widest mb-4">Search listing</h3>
+              <SearchListing path={sitePage.path} name={`${sitePage.label} page`} />
             </div>
           )}
           {activeFields.length > 0 && (

@@ -8,7 +8,18 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
-  const { id, ...data } = await req.json();
+  const body = await req.json();
+  // { slug, ... } saves the search listing for one address, creating it if new.
+  if (body.slug) {
+    await pages.setSeo(
+      String(body.slug),
+      String(body.title ?? ""),
+      String(body.metaTitle ?? ""),
+      String(body.metaDesc ?? ""),
+    );
+    return NextResponse.json({ ok: true });
+  }
+  const { id, ...data } = body;
   await pages.update(id, data);
   return NextResponse.json({ ok: true });
 }

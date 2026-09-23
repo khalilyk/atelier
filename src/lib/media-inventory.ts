@@ -4,12 +4,25 @@ import { listProducts as listSignature } from "@/app/signature/data";
 import { getContentOverrides, getImages, getPublishedCategories } from "./get-content";
 import { journal, projects, customPages, productContent } from "./admin-store";
 import { hasHotspots } from "./hotspots";
+import { RESOURCES } from "./download-token";
+import { documents } from "./admin-store";
 
-/** One picture the site uses, wherever it comes from. */
-export type SiteImage = { url: string; name: string; source: "site"; usedBy: string };
+/** One picture or document the site uses, wherever it comes from. */
+export type SiteImage = {
+  url: string;
+  name: string;
+  source: "site";
+  usedBy: string;
+  /** Gated documents can be replaced from the library; this is their key. */
+  resource?: string;
+  replaced?: boolean;
+  kind: "image" | "document";
+};
 
 const isImage = (u: unknown): u is string =>
-  typeof u === "string" && /^(\/|https?:\/\/)/.test(u) && /\.(png|jpe?g|webp|avif|gif|svg)(\?|$)/i.test(u);
+  typeof u === "string" && /^(\/|https?:\/\/)/.test(u) && /\.(png|jpe?g|webp|avif|gif|svg|pdf|mp4)(\?|$)/i.test(u);
+
+const kindOf = (u: string): "image" | "document" => (/\.(pdf|mp4|docx?)(\?|$)/i.test(u) ? "document" : "image");
 
 const fileName = (u: string) => decodeURIComponent(u.split("?")[0].split("/").pop() || u);
 
@@ -108,7 +121,25 @@ export async function referencedImages(): Promise<SiteImage[]> {
   }
   for (const [key, url] of Object.entries(await getImages())) add(url, `Picture slot · ${key}`);
 
-  return [...found.entries()]
-    .map(([url, usedBy]) => ({ url, name: fileName(url), source: "site" as const, usedBy }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const out: SiteImage[] = [...found.entries()].map(([url, usedBy]) => ({
+    url, name: fileName(url), source: "site" as const, usedBy, kind: kindOf(url),
+  }));
+
+  // The gated guides live outside /public and are only reachable with a token,
+  // so they are listed from the resource table rather than found in the content.
+  const replaced = new Map((await documents.list().catch(() => [])).map((d) => [d.resource, d]));
+  for (const [key, res] of Object.entries(RESOURCES)) {
+    const swap = replaced.get(key);
+    out.push({
+      url: swap?.url || `/api/download/${key}`,
+      name: swap?.name || res.filename,
+      source: "site",
+      usedBy: `Gated download · ${res.label}`,
+      kind: "document",
+      resource: key,
+      replaced: !!swap,
+    });
+  }
+
+  return out.sort((a, b) => a.name.localeCompare(b.name));
 }

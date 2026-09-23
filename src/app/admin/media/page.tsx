@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import SlotsPanel from "./SlotsPanel";
 
-type MediaFile = { name: string; url: string; size: number; modifiedAt: string; source?: "upload" | "site"; usedBy?: string };
+type MediaFile = { name: string; url: string; size: number; modifiedAt: string; source?: "upload" | "site"; usedBy?: string; kind?: "image" | "document"; resource?: string; replaced?: boolean };
 
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -25,7 +25,9 @@ export default function MediaAdmin() {
   const [selected, setSelected] = useState<MediaFile | null>(null);
   const [copied, setCopied] = useState(false);
   const [picked, setPicked] = useState<string[]>([]);
-  const [filter, setFilter] = useState<"all" | "upload" | "site">("all");
+  const [filter, setFilter] = useState<"all" | "upload" | "site" | "docs">("all");
+  const replaceRef = useRef<HTMLInputElement>(null);
+  const [replacing, setReplacing] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -72,6 +74,25 @@ export default function MediaAdmin() {
     } finally { setDeleting(false); }
   }
 
+  /** Swap a gated document for a new file, or put the original back. */
+  async function replaceDoc(resource: string, file: File) {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("resource", resource);
+    setUploading(true);
+    try { await fetch("/api/admin/media", { method: "POST", body: fd }); load(); }
+    finally { setUploading(false); setReplacing(null); }
+  }
+
+  async function restoreDoc(resource: string) {
+    if (!confirm("Put the original document back?")) return;
+    await fetch("/api/admin/media", {
+      method: "PATCH", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resource, action: "restore" }),
+    });
+    load();
+  }
+
   const toggle = (name: string) => setPicked((p) => (p.includes(name) ? p.filter((n) => n !== name) : [...p, name]));
 
   function copyUrl(url: string) {
@@ -83,11 +104,14 @@ export default function MediaAdmin() {
   const isImage = (f: MediaFile) => /\.(png|jpg|jpeg|gif|webp|svg|avif)$/i.test(f.name);
   const uploadCount = files.filter(isUpload).length;
   const siteCount = files.length - uploadCount;
-  const shown = files.filter((f) => (filter === "all" ? true : filter === "upload" ? isUpload(f) : !isUpload(f)));
+  const isDoc = (f: MediaFile) => f.kind === "document" || /\.(pdf|mp4|docx?)$/i.test(f.name);
+  const docCount = files.filter(isDoc).length;
+  const shown = files.filter((f) =>
+    filter === "all" ? true : filter === "docs" ? isDoc(f) : filter === "upload" ? isUpload(f) : !isUpload(f));
   const allPickable = files.filter(isUpload).map((f) => f.name);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-[calc(100vh-108px)] min-h-[520px] overflow-hidden">
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-stone-100 shrink-0">
@@ -117,6 +141,8 @@ export default function MediaAdmin() {
               {uploading ? "Uploading…" : "Upload Files"}
             </button>
             <input ref={inputRef} type="file" multiple accept="image/*,video/*,.pdf" className="hidden" onChange={handleUpload} />
+            <input ref={replaceRef} type="file" accept=".pdf" className="hidden"
+              onChange={(e) => { const f = e.target.files?.[0]; if (f && replacing) void replaceDoc(replacing, f); e.target.value = ""; }} />
           </div>
         </div>
 
@@ -127,7 +153,7 @@ export default function MediaAdmin() {
         {/* What to show, and what to do with a selection */}
         <div className="flex items-center gap-3 flex-wrap px-6 pt-4 shrink-0">
           <div className="flex items-center gap-1 bg-stone-100 rounded-lg p-1">
-            {([["all", `All (${files.length})`], ["upload", `Uploaded (${uploadCount})`], ["site", `In the site (${siteCount})`]] as [typeof filter, string][]).map(([id, label]) => (
+            {([["all", `All (${files.length})`], ["upload", `Uploaded (${uploadCount})`], ["site", `In the site (${siteCount})`], ["docs", `Documents (${docCount})`]] as [typeof filter, string][]).map(([id, label]) => (
               <button key={id} onClick={() => setFilter(id)}
                 className={`text-[11px] uppercase tracking-widest px-3 py-1.5 rounded-md transition-colors ${filter === id ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 hover:text-stone-900"}`}>
                 {label}
@@ -169,20 +195,22 @@ export default function MediaAdmin() {
                 <div
                   key={f.url}
                   onClick={() => setSelected(f)}
-                  className="group relative rounded-xl overflow-hidden cursor-pointer border-2 transition-all"
-                  style={{ borderColor: selected?.name === f.name ? "#b8934a" : "transparent", background: "#f8f7f5" }}
+                  className="group cursor-pointer"
+                  title={f.name}
                 >
+                  <div
+                    className="relative rounded-xl overflow-hidden border-2 transition-all"
+                    style={{ borderColor: selected?.url === f.url ? "#b8934a" : "transparent", background: "#f8f7f5" }}
+                  >
                   <div className="aspect-square relative">
                     {isImage(f) ? (
                       <Image src={f.url} alt={f.name} fill className="object-cover" sizes="160px" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-2xl text-stone-400">
-                        {/\.mp4$/i.test(f.name) ? "▶" : "📄"}
+                      <div className="w-full h-full flex flex-col items-center justify-center gap-1 text-stone-400">
+                        <span className="text-2xl">{/\.mp4$/i.test(f.name) ? "▶" : "📄"}</span>
+                        <span className="text-[9px] uppercase tracking-widest px-2 text-center leading-tight">{f.name.split(".").pop()}</span>
                       </div>
                     )}
-                  </div>
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-end">
-                    <p className="text-white text-xs px-2 pb-2 truncate w-full">{f.name}</p>
                   </div>
                   {isUpload(f) ? (
                     <input
@@ -196,6 +224,9 @@ export default function MediaAdmin() {
                   ) : (
                     <span className="absolute top-2 left-2 z-10 text-[8.5px] uppercase tracking-widest bg-white/85 text-stone-500 px-1.5 py-0.5 rounded" title={f.usedBy}>In the site</span>
                   )}
+                  </div>
+                  {/* The name sits under the tile - a document is unreadable without it. */}
+                  <p className="mt-1.5 text-[11px] text-stone-600 leading-snug line-clamp-2 break-words">{f.name}</p>
                 </div>
               ))}
             </div>
@@ -249,7 +280,7 @@ export default function MediaAdmin() {
 
       {/* Detail panel */}
       {tab === "files" && selected && (
-        <aside className="w-64 shrink-0 bg-white border-l border-stone-100 flex flex-col overflow-hidden">
+        <aside className="w-64 shrink-0 bg-white border-l border-stone-100 flex flex-col overflow-hidden max-h-full">
           <div className="flex items-center justify-between px-4 py-4 border-b border-stone-100">
             <p className="text-sm font-medium text-stone-700">File Details</p>
             <button onClick={() => setSelected(null)} className="text-stone-400 hover:text-stone-600">✕</button>
@@ -277,7 +308,13 @@ export default function MediaAdmin() {
               <div>
                 <p className="text-xs text-stone-400 uppercase tracking-wider mb-1">Used by</p>
                 <p className="text-sm text-stone-700">{selected.usedBy || "The website"}</p>
-                <p className="text-[11px] text-stone-400 mt-2">This picture is part of the website&rsquo;s own files, so it cannot be deleted here.</p>
+                <p className="text-[11px] text-stone-400 mt-2">
+                  {selected.resource
+                    ? selected.replaced
+                      ? "This document has been replaced. Visitors receive the new file."
+                      : "This document ships with the website. Replace it to send visitors a new file."
+                    : "This picture is part of the website\u2019s own files, so it is changed where it is used."}
+                </p>
               </div>
             )}
           </div>
@@ -288,6 +325,25 @@ export default function MediaAdmin() {
             >
               {copied ? "Copied!" : "Copy URL"}
             </button>
+            {selected.resource && (
+              <>
+                <button
+                  onClick={() => { setReplacing(selected.resource!); replaceRef.current?.click(); }}
+                  disabled={uploading}
+                  className="w-full bg-[#b8934a] text-white text-xs uppercase tracking-widest py-2.5 rounded-lg hover:bg-[#a07e3c] transition-colors disabled:opacity-50"
+                >
+                  {uploading && replacing === selected.resource ? "Uploading…" : "Replace document"}
+                </button>
+                {selected.replaced && (
+                  <button
+                    onClick={() => restoreDoc(selected.resource!)}
+                    className="w-full border border-stone-200 hover:bg-stone-50 text-stone-600 text-xs uppercase tracking-widest py-2.5 rounded-lg transition-colors"
+                  >
+                    Put the original back
+                  </button>
+                )}
+              </>
+            )}
             {isUpload(selected) && (
               <button
                 onClick={() => handleDelete(selected.name)}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import ImagePicker from "../components/ImagePicker";
 import BuiltInCategoryEditor, { BUILT_IN } from "./BuiltInCategoryEditor";
+import SearchListing from "../components/SearchListing";
 import BlockList from "../components/BlockList";
 import { CUSTOM_FIELDS } from "@/lib/page-blocks";
 import { slugify, TEMPLATE_LABEL, type CategoryTemplate, type CustomCategory } from "@/lib/categories";
@@ -226,6 +227,10 @@ export default function CategoriesAdmin() {
                 </button>
               </div>
             </div>
+
+            <Card title="Search listing" note="How this category appears on Google.">
+              <SearchListing path={`/classic/${form.slug}`} name={form.label} fallbackDescription={form.heroIntro} />
+            </Card>
 
             <Card title="Visibility" note="Drafts are hidden from visitors. Use Preview to check a draft while signed in.">
               <Toggle label="Published" checked={form.published} onChange={(v) => set("published", v)} hint="Make the page live at its URL." />

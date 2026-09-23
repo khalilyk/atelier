@@ -26,7 +26,6 @@ const NAV: { section: string; items: { label: string; href: string; icon: IconNa
     { label: "Company Details", href: "/admin/company", icon: "pages" },
     { label: "Accounts", href: "/admin/admins", icon: "users" },
     { label: "Backups", href: "/admin/backups", icon: "pages" },
-    { label: "SEO", href: "/admin/seo", icon: "seo" },
     { label: "Analytics", href: "/admin/analytics", icon: "analytics" },
   ]},
 ];

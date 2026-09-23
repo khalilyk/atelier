@@ -270,6 +270,24 @@ export const pages = {
   update: async (id: string, data: Partial<Page>) => {
     await pages.save((await pages.list()).map(p => p.id === id ? { ...p, ...data, updatedAt: new Date().toISOString() } : p));
   },
+  /**
+   * The search listing for one address. Products and categories are edited on
+   * their own screens, so an entry is created the first time one is saved.
+   */
+  setSeo: async (slug: string, title: string, metaTitle: string, metaDesc: string) => {
+    const all = await pages.list();
+    const now = new Date().toISOString();
+    const found = all.find((p) => p.slug === slug);
+    if (found) {
+      await pages.save(all.map((p) => (p.slug === slug ? { ...p, metaTitle, metaDesc, updatedAt: now } : p)));
+      return;
+    }
+    await pages.save([...all, {
+      id: `seo-${slug.replace(/[^a-z0-9]+/gi, "-").replace(/^-+|-+$/g, "") || "home"}`,
+      slug, title: title || slug, status: "published", metaTitle, metaDesc,
+      content: "", updatedAt: now,
+    }]);
+  },
 };
 
 // ── Products ────────────────────────────────────────────────────────────────
@@ -769,6 +787,52 @@ export const analytics = {
     } else {
       const dir = path.join(VIEW_DIR, day);
       if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
+    }
+  },
+};
+
+// ── Replaced documents ───────────────────────────────────────────────────────
+// A gated PDF ships with the site, but can be replaced from the Media Library.
+// The replacement lives in Blob; clearing it falls back to the bundled file.
+export type DocOverride = { resource: string; url: string; name: string; updatedAt: string };
+
+const DOCS_PREFIX = "documents/";
+const DOCS_DIR = path.join(DATA_DIR, "documents");
+
+export const documents = {
+  list: async (): Promise<DocOverride[]> => {
+    if (USE_BLOB) {
+      const blobs = await newestRecordBlobs(DOCS_PREFIX);
+      const read = await Promise.all(blobs.map((b) => readJsonBlob<DocOverride>(b.url)));
+      return read.filter((d): d is DocOverride => !!d);
+    }
+    if (!fs.existsSync(DOCS_DIR)) return [];
+    return fs.readdirSync(DOCS_DIR).filter((f) => f.endsWith(".json"))
+      .map((f) => JSON.parse(fs.readFileSync(path.join(DOCS_DIR, f), "utf-8")) as DocOverride);
+  },
+  get: async (resource: string): Promise<DocOverride | null> => {
+    if (USE_BLOB) {
+      const match = await newestRecordBlob(DOCS_PREFIX, resource);
+      return match ? await readJsonBlob<DocOverride>(match.url) : null;
+    }
+    const f = path.join(DOCS_DIR, `${resource}.json`);
+    return fs.existsSync(f) ? (JSON.parse(fs.readFileSync(f, "utf-8")) as DocOverride) : null;
+  },
+  put: async (item: DocOverride) => {
+    const body = JSON.stringify(item, null, 2);
+    if (USE_BLOB) {
+      await putRecordBlob(DOCS_PREFIX, item.resource, body);
+    } else {
+      if (!fs.existsSync(DOCS_DIR)) fs.mkdirSync(DOCS_DIR, { recursive: true });
+      fs.writeFileSync(path.join(DOCS_DIR, `${item.resource}.json`), body);
+    }
+  },
+  remove: async (resource: string) => {
+    if (USE_BLOB) {
+      await removeRecordBlob(DOCS_PREFIX, resource);
+    } else {
+      const f = path.join(DOCS_DIR, `${resource}.json`);
+      if (fs.existsSync(f)) fs.unlinkSync(f);
     }
   },
 };
