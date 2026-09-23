@@ -72,7 +72,8 @@ async function main() {
   const dir = path.join(OUT_ROOT, stamp);
   fs.mkdirSync(dir, { recursive: true });
 
-  // 1. Everything in the blob store.
+  // 1. Everything in the blob store, except the copies of this project's own
+  // files (public/ and the gated PDFs) - they already live here, and in git.
   const blobs = [];
   let cursor;
   do {
@@ -80,6 +81,12 @@ async function main() {
     blobs.push(...page.blobs);
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);
+
+  const skipped = blobs.length;
+  const wanted = blobs.filter((b) => !b.pathname.startsWith("site-files/"));
+  if (skipped !== wanted.length) log(`Skipping ${skipped - wanted.length} site file(s) already on this machine`);
+  blobs.length = 0;
+  blobs.push(...wanted);
 
   let ok = 0, failed = 0, bytes = 0;
   for (const b of blobs) {

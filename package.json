@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "mirror:site": "node scripts/mirror-site-files.mjs",
+    "backup:local": "node scripts/backup-local.mjs"
   },
   "dependencies": {
     "@tinymce/tinymce-react": "^6.3.0",
