@@ -15,11 +15,13 @@ export function generateMetadata() {
 const BRANDS = [
   {
     name: "Kin Long",
+    imgs: ["/products/classic/hardware/kin-long.png"],
     lead: "A comprehensive range of architectural window and door hardware designed to combine refined styling with reliable everyday performance.",
     body: "Available across a variety of window and door configurations, Kin Long provides a coordinated approach to handles, locks and operating hardware throughout the home.",
   },
   {
     name: "Doric",
+    imgs: ["/products/classic/hardware/doric-sliding.png", "/products/classic/hardware/doric-awning.png"],
     lead: "Established Australian architectural hardware for sliding doors, windows and residential applications.",
     body: "Doric hardware provides practical, proven solutions with a clean architectural appearance suited to the Atelier Classic Collection.",
   },
@@ -67,7 +69,7 @@ export default function DoorHardwarePage() {
           <p className="type-body text-stone-500 max-w-2xl mb-16" style={{ lineHeight: 1.85 }}>Explore hardware options from established architectural hardware manufacturers, with selections tailored to the requirements of your window and door systems.</p>
 
           <div className="flex flex-col gap-16 md:gap-20">
-            {BRANDS.map((b, i) => (
+            {BRANDS.map((b) => (
               <div key={b.name} className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12 items-start">
                 <div className="md:col-span-2">
                   <h2 className="type-large text-stone-900 mb-4" style={{ fontSize: "clamp(24px, 3vw, 38px)", lineHeight: 1.05 }}>{b.name}</h2>
@@ -77,8 +79,9 @@ export default function DoorHardwarePage() {
                 <div className="md:col-span-3 grid grid-cols-3 gap-3">
                   {[0, 1, 2].map((n) => (
                     <div key={n} className="relative aspect-square rounded-xl overflow-hidden bg-[#ede8df] border border-stone-200 flex items-center justify-center">
-                      {i === 0 && n === 0 ? (
-                        <Image src="/products/classic/windows/asg102/ASG102-Hardware.png" alt={`${b.name} hardware`} fill className="object-cover" />
+                      {b.imgs?.[n] ? (
+                        /* Hardware renders sit on white, so they are shown whole rather than cropped. */
+                        <Image src={b.imgs[n]} alt={`${b.name} hardware`} fill className="object-contain p-3 bg-white" />
                       ) : (
                         <span className="type-label text-stone-300" style={{ fontSize: "10px" }}>{b.name}</span>
                       )}

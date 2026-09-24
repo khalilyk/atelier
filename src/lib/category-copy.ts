@@ -29,12 +29,12 @@ const NEW: Record<string, { group: string; sections: Record<string, Field[]> }> 
         {
           key: "wd.tailored.items", label: "Options (Label :: Image URL, one per line)", multiline: true,
           default: [
-            `Coordinated shop drawings prior to production :: ${IMG}/ASG 102 Series Sliding Window Doors/ASG102-Side Profile.png`,
-            `Custom opening sizes and configurations :: ${IMG}/ASG 102 Series Pocket Sliding Door/ASG102 Pocket Home.png`,
-            `Single or double glazing, including Low-E and performance glazing :: ${IMG}/ASG 102 Series Louvre Glass/ASG102 Louvre Glass.png`,
-            `Sliding, stacking, awning, casement and fixed configurations :: ${IMG}/ASG 102 Series Awning Windows/ASG102-Awning Window.png`,
-            `Architectural powdercoat finishes :: ${IMG}/ASG 86 Sliding Doors Windows/ASG86 Sliding Doors.png`,
-            `Project-specific hardware selections :: ${IMG}/asg102/ASG102-Hardware.png`,
+            `Coordinated shop drawings prior to production :: /products/classic/windows/tailored/shop-drawings.png`,
+            `Custom opening sizes and configurations :: /products/classic/windows/tailored/custom-sizes.png`,
+            `Single or double glazing, including Low-E and performance glazing :: /products/classic/windows/tailored/glazing.png`,
+            `Sliding, stacking, awning, casement and fixed configurations :: /products/classic/windows/tailored/configurations.png`,
+            `Architectural powdercoat finishes :: /products/classic/windows/tailored/powdercoat.png`,
+            `Project-specific hardware selections :: /products/classic/windows/tailored/hardware.png`,
           ].join("\n"),
         },
         { key: "wd.tailored.closing", label: "Closing line", multiline: true, default: "The result is a window and door package that is considered before it is manufactured - not simply ordered from a catalogue." },
