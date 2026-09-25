@@ -169,7 +169,6 @@ export default function ContactPage() {
                 <option value="" disabled>Project type</option>
                 <option value="residential">Residential</option>
                 <option value="commercial">Commercial</option>
-                <option value="hospitality">Hospitality</option>
                 <option value="other">Other</option>
               </select>
               <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-3 h-3 text-stone-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 8 5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
