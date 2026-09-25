@@ -24,7 +24,9 @@ export const abs = (path: string) =>
 export const DEFAULT_TITLE = "Atelier Supply Group | Windows, Doors & Joinery Australia";
 export const DEFAULT_DESC =
   "Architectural aluminium windows and doors, custom joinery and coordinated bathroom packages for Australian homes. Specified to your plans and delivered Australia-wide.";
-export const DEFAULT_OG = "/Atelier_Classic.png";
+// The left-hand hero from the homepage header: windows, doors, joinery and a
+// bathroom in one frame, and still legible as a chat thumbnail.
+export const DEFAULT_OG = "/products/Main Classic.png";
 
 const getSettings = cache(async (): Promise<Partial<Settings>> => {
   try { return await settings.get(); } catch { return {}; }
