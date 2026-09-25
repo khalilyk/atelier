@@ -3,10 +3,13 @@
 // is what our pages were doing: the source images are 1-3.5MB each.
 //
 // This renders a share-sized copy of every image used as an og:image into
-// public/og, and writes the source -> copy map that src/lib/og.ts reads. Run it
-// whenever a new image becomes a page's og:image:
+// public/og, writes the source -> copy map that src/lib/og.ts reads, and cuts
+// the email header banner.
 //
-//   node scripts/build-og-images.mjs
+// It runs automatically before every build (the prebuild script), so pointing a
+// page at a new image cannot leave it serving the full-size original. Work is
+// keyed by content hash, so a build where nothing changed costs a fraction of a
+// second. Run it by hand with `npm run og` to see the result before committing.
 //
 import sharp from "sharp";
 import fs from "fs";
@@ -17,6 +20,10 @@ import { fileURLToPath } from "url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = path.join(ROOT, "public", "og");
 const MAP_FILE = path.join(ROOT, "src", "lib", "og-map.json");
+// Which source each copy was rendered from, so a build can skip the work when
+// nothing changed. Keyed by content hash rather than mtime, which a fresh
+// checkout rewrites.
+const CACHE_FILE = path.join(ROOT, "public", "og", ".cache.json");
 
 // 1200x630 is what Facebook, WhatsApp, LinkedIn and X all read as a large card.
 const W = 1200, H = 630;
@@ -85,15 +92,25 @@ async function render(absIn, absOut) {
 const list = await sources();
 fs.mkdirSync(OUT_DIR, { recursive: true });
 
+const digest = (abs) => crypto.createHash("sha1").update(fs.readFileSync(abs)).digest("hex");
+let cache = {};
+try { cache = JSON.parse(fs.readFileSync(CACHE_FILE, "utf8")); } catch { /* first run */ }
+
 const map = {};
-let built = 0, saved = 0;
+const next = {};
+let built = 0, skipped = 0, saved = 0;
 for (const rel of list) {
   const absIn = path.join(ROOT, "public", rel);
   const name = outName(rel);
   const absOut = path.join(OUT_DIR, name);
+  const hash = digest(absIn);
+  map[rel] = `/og/${name}`;
+  next[rel] = hash;
+
+  if (cache[rel] === hash && fs.existsSync(absOut)) { skipped++; continue; }
+
   const before = fs.statSync(absIn).size;
   const { bytes, quality } = await render(absIn, absOut);
-  map[rel] = `/og/${name}`;
   built++; saved += before - bytes;
   console.log(`  ${(before / 1048576).toFixed(2)}MB -> ${(bytes / 1024).toFixed(0)}KB  q${quality}  ${rel}`);
 }
@@ -105,16 +122,27 @@ fs.writeFileSync(MAP_FILE, JSON.stringify(map, null, 2) + "\n");
 // at twice the size for high-density screens.
 const HEADER_SRC = "/products/Main Classic.png";
 const headerDir = path.join(ROOT, "public", "email");
+const headerOut = path.join(headerDir, "header.jpg");
 fs.mkdirSync(headerDir, { recursive: true });
-const headerBuf = await sharp(path.join(ROOT, "public", HEADER_SRC))
-  .resize(1240, 480, { fit: "cover", position: "attention" })
-  .jpeg({ quality: 78, mozjpeg: true })
-  .toBuffer();
-fs.writeFileSync(path.join(headerDir, "header.jpg"), headerBuf);
-console.log(`\n  email header: ${(headerBuf.length / 1024).toFixed(0)}KB from ${HEADER_SRC}`);
+const headerHash = digest(path.join(ROOT, "public", HEADER_SRC));
+next["email:header"] = headerHash;
+if (cache["email:header"] !== headerHash || !fs.existsSync(headerOut)) {
+  const headerBuf = await sharp(path.join(ROOT, "public", HEADER_SRC))
+    .resize(1240, 480, { fit: "cover", position: "attention" })
+    .jpeg({ quality: 78, mozjpeg: true })
+    .toBuffer();
+  fs.writeFileSync(headerOut, headerBuf);
+  built++;
+  console.log(`  email header: ${(headerBuf.length / 1024).toFixed(0)}KB from ${HEADER_SRC}`);
+} else {
+  skipped++;
+}
+
+fs.writeFileSync(CACHE_FILE, JSON.stringify(next, null, 2) + "\n");
 
 // Drop copies whose source is gone.
 const keep = new Set(Object.values(map).map((p) => path.basename(p)));
+keep.add(".cache.json");
 for (const f of fs.readdirSync(OUT_DIR)) if (!keep.has(f)) fs.unlinkSync(path.join(OUT_DIR, f));
 
-console.log(`\n${built} share images, ${(saved / 1048576).toFixed(1)}MB lighter in total`);
+console.log(`\n${built} rendered, ${skipped} already current${saved ? `, ${(saved / 1048576).toFixed(1)}MB saved this run` : ""}`);

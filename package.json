@@ -9,7 +9,8 @@
     "lint": "eslint",
     "mirror:site": "node scripts/mirror-site-files.mjs",
     "backup:local": "node scripts/backup-local.mjs",
-    "og": "node scripts/build-og-images.mjs"
+    "og": "node scripts/build-og-images.mjs",
+    "prebuild": "node scripts/build-og-images.mjs"
   },
   "dependencies": {
     "@tinymce/tinymce-react": "^6.3.0",
