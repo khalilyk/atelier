@@ -37,9 +37,9 @@ export default function SiteFooter() {
             <p className="type-label text-[#b8934a] mb-5">Contact</p>
             <p className="type-body text-white mb-4">{c.location}</p>
             <div className="w-8 h-px bg-white/20 mb-4" />
-            <p className="type-body text-white mb-4">{c.phone}</p>
+            <a href={`tel:${c.phone.replace(/[^+\d]/g, "")}`} className="type-body text-white mb-4 hover:text-[#b8934a] transition-colors">{c.phone}</a>
             <div className="w-8 h-px bg-white/20 mb-4" />
-            <p className="type-body text-white mb-6">{c.email}</p>
+            <a href={`mailto:${c.email}`} className="type-body text-white mb-6 hover:text-[#b8934a] transition-colors">{c.email}</a>
             <div className="w-8 h-px bg-white/20 mb-5" />
             <div className="flex flex-col gap-3">
               <a href={igUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-300 hover:text-white transition-colors">
