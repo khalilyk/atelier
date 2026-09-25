@@ -1,6 +1,7 @@
 // Server-side SEO helpers: site URL, per-page metadata (with admin overrides)
 // and schema.org JSON-LD builders.
 import type { Metadata } from "next";
+import { shareImage, SHARE_W, SHARE_H } from "./og";
 import { cache } from "react";
 import { pages, settings, type Settings } from "./admin-store";
 import { getCompany } from "./get-content";
@@ -60,7 +61,7 @@ export async function pageMetadata(p: PageSeo): Promise<Metadata> {
   // Drop the brand suffix when it would push the title past the ~60
   // characters a search result shows.
   const absolute = p.absoluteTitle || !!o?.metaTitle?.trim() || `${title} | ${SITE_NAME}`.length > 60;
-  const image = p.image || s.ogImage || DEFAULT_OG;
+  const image = shareImage(p.image || s.ogImage || DEFAULT_OG);
   return {
     title: absolute ? { absolute: title } : title,
     description,
@@ -72,7 +73,7 @@ export async function pageMetadata(p: PageSeo): Promise<Metadata> {
       url: p.path,
       title: absolute ? title : `${title} | ${SITE_NAME}`,
       description,
-      images: [{ url: image, alt: title }],
+      images: [{ url: image, alt: title, width: SHARE_W, height: SHARE_H, type: "image/jpeg" }],
     },
     twitter: { card: "summary_large_image", title, description, images: [image] },
     ...(p.noindex ? { robots: { index: false, follow: true } } : {}),
@@ -95,11 +96,11 @@ export async function rootMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website", locale: "en_AU", siteName: SITE_NAME, url: "/",
       title, description: desc,
-      images: [{ url: s.ogImage || DEFAULT_OG, alt: SITE_NAME }],
+      images: [{ url: shareImage(s.ogImage || DEFAULT_OG), alt: SITE_NAME, width: SHARE_W, height: SHARE_H, type: "image/jpeg" }],
     },
     twitter: {
       card: "summary_large_image", title, description: desc,
-      images: [s.ogImage || DEFAULT_OG],
+      images: [shareImage(s.ogImage || DEFAULT_OG)],
       ...(handle ? { site: handle.startsWith("@") ? handle : `@${handle}` } : {}),
     },
     robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },

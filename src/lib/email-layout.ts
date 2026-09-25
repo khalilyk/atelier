@@ -53,7 +53,10 @@ export type ShellOpts = {
 
 export function emailShell(o: ShellOpts): string {
   const site = o.siteUrl.replace(/\/+$/, "");
-  const logo = `${site}/Atelier-logo.png`;
+  // A mail client cannot reach localhost, so images always come from the live
+  // site even when the email was sent from a dev server.
+  const assets = /^https:\/\//.test(site) ? site : "https://www.ateliersupplygroup.com.au";
+  const logo = `${assets}/Atelier-logo.png`;
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
