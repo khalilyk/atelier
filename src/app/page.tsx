@@ -12,7 +12,7 @@ import { pageMetadata } from "@/lib/seo";
 export function generateMetadata() {
   return pageMetadata({
     path: "/",
-    title: "Atelier Supply Group | Windows, Doors, Joinery & Bathroom Packages",
+    title: "Atelier Supply Group | Windows, Doors & Joinery Australia",
     description: "Architectural aluminium windows and doors, custom joinery and coordinated bathroom packages for Australian homes. Specified to your plans, quality inspected and delivered Australia-wide.",
     absoluteTitle: true,
   });

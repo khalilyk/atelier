@@ -20,9 +20,9 @@ export function siteUrl(): string {
 export const abs = (path: string) =>
   /^https?:/.test(path) ? path : encodeURI(decodeURI(`${siteUrl()}${path.startsWith("/") ? "" : "/"}${path}`));
 
-export const DEFAULT_TITLE = "Atelier Supply Group | Windows, Doors, Joinery & Bathroom Packages";
+export const DEFAULT_TITLE = "Atelier Supply Group | Windows, Doors & Joinery Australia";
 export const DEFAULT_DESC =
-  "Architectural aluminium windows and doors, custom joinery and coordinated bathroom packages for Australian homes. Specified to your plans, quality inspected and delivered Australia-wide.";
+  "Architectural aluminium windows and doors, custom joinery and coordinated bathroom packages for Australian homes. Specified to your plans and delivered Australia-wide.";
 export const DEFAULT_OG = "/Atelier_Classic.png";
 
 const getSettings = cache(async (): Promise<Partial<Settings>> => {

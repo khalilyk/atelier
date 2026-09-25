@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
   if (!data) return { title: "Not found", robots: { index: false } };
   return pageMetadata({
     path: `/signature/${category}/${product}`,
-    title: `${data.name} | Signature Luxe ${data.categoryLabel}`,
+    title: `${data.name} | Signature Luxe`,
     description: productSummary(data),
     image: data.heroImg,
   });

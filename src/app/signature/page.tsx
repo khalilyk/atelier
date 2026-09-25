@@ -5,7 +5,7 @@ import PageClient from "./PageClient";
 const DESC = "The Atelier Signature Luxe Collection: thermally broken and ultra-slim panoramic aluminium window and door systems for premium Australian homes, custom manufactured for each project.";
 
 export function generateMetadata() {
-  return pageMetadata({ path: "/signature", title: "Signature Luxe Collection", description: DESC, image: "/Signature Luxe.png" });
+  return pageMetadata({ path: "/signature", title: "Signature Luxe: Thermally Broken Windows Australia", description: DESC, image: "/Signature Luxe.png" });
 }
 
 export default function Page() {

@@ -7,7 +7,7 @@ import PageClient from "./PageClient";
 const DESC = "The Atelier Classic Collection: architectural aluminium windows and doors, custom joinery and fully coordinated bathroom packages for new homes, renovations and developments across Australia.";
 
 export function generateMetadata() {
-  return pageMetadata({ path: "/classic", title: "Classic Collection: Windows, Doors, Joinery & Bathrooms", description: DESC });
+  return pageMetadata({ path: "/classic", title: "Classic Collection: Windows, Doors & Joinery Australia", description: DESC });
 }
 
 export default async function Page() {
