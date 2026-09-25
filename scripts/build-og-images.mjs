@@ -100,6 +100,19 @@ for (const rel of list) {
 
 fs.writeFileSync(MAP_FILE, JSON.stringify(map, null, 2) + "\n");
 
+// The emails open with the same photograph as the site header, cropped to a
+// banner. Mail clients cannot crop, so the file is the shape it is shown at,
+// at twice the size for high-density screens.
+const HEADER_SRC = "/products/Main Classic.png";
+const headerDir = path.join(ROOT, "public", "email");
+fs.mkdirSync(headerDir, { recursive: true });
+const headerBuf = await sharp(path.join(ROOT, "public", HEADER_SRC))
+  .resize(1240, 480, { fit: "cover", position: "attention" })
+  .jpeg({ quality: 78, mozjpeg: true })
+  .toBuffer();
+fs.writeFileSync(path.join(headerDir, "header.jpg"), headerBuf);
+console.log(`\n  email header: ${(headerBuf.length / 1024).toFixed(0)}KB from ${HEADER_SRC}`);
+
 // Drop copies whose source is gone.
 const keep = new Set(Object.values(map).map((p) => path.basename(p)));
 for (const f of fs.readdirSync(OUT_DIR)) if (!keep.has(f)) fs.unlinkSync(path.join(OUT_DIR, f));

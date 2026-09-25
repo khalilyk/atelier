@@ -98,10 +98,21 @@ export function emailShell(o: ShellOpts): string {
 
           <!-- Logo. Cream on the brand dark, which is how the mark is drawn. -->
           <tr>
-            <td align="center" style="padding:16px 0 28px 0;">
+            <td align="center" style="padding:16px 0 24px 0;">
               <a href="${site}" target="_blank" style="text-decoration:none;">
                 <img src="${logo}" width="150" height="96" alt="Atelier Supply Group"
                      style="display:block;width:150px;height:auto;border:0;" />
+              </a>
+            </td>
+          </tr>
+
+          <!-- The same photograph the site opens with. Supplied at the shape
+               it is shown at, since mail clients cannot crop. -->
+          <tr>
+            <td style="font-size:0;line-height:0;">
+              <a href="${site}" target="_blank" style="text-decoration:none;">
+                <img src="${assets}/email/header.jpg" width="620" height="240" alt=""
+                     style="display:block;width:100%;max-width:620px;height:auto;border:0;" />
               </a>
             </td>
           </tr>
