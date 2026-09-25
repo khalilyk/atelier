@@ -57,8 +57,9 @@ export async function pageMetadata(p: PageSeo): Promise<Metadata> {
   const o = ov[p.path];
   const title = o?.metaTitle?.trim() || p.title;
   const description = truncate(o?.metaDesc?.trim() || p.description);
-  // Drop the brand suffix when it would push the title past ~60 characters.
-  const absolute = p.absoluteTitle || !!o?.metaTitle?.trim() || `${title} | ${SITE_NAME}`.length > 62;
+  // Drop the brand suffix when it would push the title past the ~60
+  // characters a search result shows.
+  const absolute = p.absoluteTitle || !!o?.metaTitle?.trim() || `${title} | ${SITE_NAME}`.length > 60;
   const image = p.image || s.ogImage || DEFAULT_OG;
   return {
     title: absolute ? { absolute: title } : title,
