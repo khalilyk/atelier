@@ -11,8 +11,36 @@ export default function ContactPage() {
     fullName: "", company: "", email: "", phone: "", projectType: "", message: "", privacy: false,
   });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  // What is still missing, named so the visitor knows what to fix.
+  const [missing, setMissing] = useState<string[]>([]);
 
-  const set = (k: string, v: string | boolean) => setForm(f => ({ ...f, [k]: v }));
+  // Editing anything clears the notice - it is re-checked on the next send.
+  const set = (k: string, v: string | boolean) => {
+    setForm(f => ({ ...f, [k]: v }));
+    setMissing([]);
+  };
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function whatIsMissing() {
+    const out: string[] = [];
+    if (!form.fullName.trim()) out.push("your full name");
+    if (!form.email.trim()) out.push("your email address");
+    else if (!EMAIL_RE.test(form.email.trim())) out.push("a valid email address");
+    if (!form.phone.trim()) out.push("your phone number");
+    if (!form.message.trim()) out.push("a few words about your project");
+    if (!form.privacy) out.push("your agreement to the privacy policy");
+    return out;
+  }
+
+  const shortfall = (k: "fullName" | "email" | "phone" | "message" | "privacy") =>
+    missing.length > 0 && (k === "privacy" ? !form.privacy
+      : k === "email" ? !form.email.trim() || !EMAIL_RE.test(form.email.trim())
+      : !form[k].trim());
+
+  // Red border on whichever field is at fault.
+  const fieldClass = (k: "fullName" | "email" | "phone" | "message") =>
+    `border bg-white px-4 py-3.5 type-body text-stone-800 placeholder:text-stone-400 outline-none transition-colors ${shortfall(k) ? "border-red-600 focus:border-red-600" : "border-stone-200 focus:border-stone-400"}`;
   const resultRef = useRef<HTMLDivElement>(null);
 
   // The long form collapses into a short message, so bring it into view -
@@ -23,7 +51,13 @@ export default function ContactPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.fullName || !form.email || !form.privacy) return;
+    const gaps = whatIsMissing();
+    if (gaps.length) {
+      // Say what is needed rather than letting the button do nothing.
+      setMissing(gaps);
+      return;
+    }
+    setMissing([]);
     setStatus("sending");
     const message = `Quote request via contact form.\nProject type: ${form.projectType || "-"}\n\n${form.message || "-"}`;
     try {
@@ -106,6 +140,20 @@ export default function ContactPage() {
 
     form: (
       <section className="bg-[#f5f0e8] py-16 md:py-20 px-6 md:px-8">
+        {status === "sent" ? (
+        <div ref={resultRef} className="max-w-3xl mx-auto text-center scroll-mt-28 py-8 md:py-16">
+          <div className="w-16 h-16 rounded-full border border-[#b8934a] flex items-center justify-center mb-8 mx-auto">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b8934a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+          </div>
+          <h2 className="type-heading text-stone-900 mb-6" style={{ fontSize: "clamp(34px, 6vw, 68px)", lineHeight: 1.05, fontWeight: 500 }}>
+            Thank you, {form.fullName.split(" ")[0]}.
+          </h2>
+          <div className="w-10 h-px bg-[#b8934a] mx-auto mb-8" />
+          <p className="type-body text-stone-700 mx-auto" style={{ lineHeight: 1.8, fontSize: "clamp(17px, 2.2vw, 22px)", maxWidth: "36rem" }}>
+            We&rsquo;ve received your enquiry and our team will be in touch shortly to discuss your project and prepare a quote.
+          </p>
+        </div>
+        ) : (
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-16">
 
           {/* Left col */}
@@ -126,23 +174,13 @@ export default function ContactPage() {
           </div>
 
           {/* Form */}
-          {status === "sent" ? (
-          <div ref={resultRef} className="md:col-span-3 flex flex-col items-start justify-center scroll-mt-28">
-            <div className="w-12 h-12 rounded-full border border-[#b8934a] flex items-center justify-center mb-6">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#b8934a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
-            </div>
-            <h3 className="type-heading text-stone-900 mb-3" style={{ fontSize: "clamp(22px, 3vw, 32px)" }}>Thank you, {form.fullName.split(" ")[0]}.</h3>
-            <p className="type-body text-stone-600" style={{ lineHeight: 1.8, maxWidth: "26rem" }}>
-              We&rsquo;ve received your enquiry and our team will be in touch shortly to discuss your project and prepare a quote.
-            </p>
-          </div>
-          ) : (
-          <form className="md:col-span-3 flex flex-col gap-4" onSubmit={handleSubmit}>
+          <form noValidate className="md:col-span-3 flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 type="text" placeholder="Full name*" required
                 value={form.fullName} onChange={e => set("fullName", e.target.value)}
-                className="border border-stone-200 bg-white px-4 py-3.5 type-body text-stone-800 placeholder:text-stone-400 outline-none focus:border-stone-400 transition-colors"
+                aria-invalid={shortfall("fullName")}
+                className={fieldClass("fullName")}
               />
               <input
                 type="text" placeholder="Company name"
@@ -152,12 +190,14 @@ export default function ContactPage() {
               <input
                 type="email" placeholder="Email address*" required
                 value={form.email} onChange={e => set("email", e.target.value)}
-                className="border border-stone-200 bg-white px-4 py-3.5 type-body text-stone-800 placeholder:text-stone-400 outline-none focus:border-stone-400 transition-colors"
+                aria-invalid={shortfall("email")}
+                className={fieldClass("email")}
               />
               <input
-                type="tel" placeholder="Phone number"
+                type="tel" placeholder="Phone number*" required
                 value={form.phone} onChange={e => set("phone", e.target.value)}
-                className="border border-stone-200 bg-white px-4 py-3.5 type-body text-stone-800 placeholder:text-stone-400 outline-none focus:border-stone-400 transition-colors"
+                aria-invalid={shortfall("phone")}
+                className={fieldClass("phone")}
               />
             </div>
 
@@ -179,18 +219,27 @@ export default function ContactPage() {
             <textarea
               placeholder="Tell us about your project*" required rows={5}
               value={form.message} onChange={e => set("message", e.target.value)}
-              className="border border-stone-200 bg-white px-4 py-3.5 type-body text-stone-800 placeholder:text-stone-400 outline-none focus:border-stone-400 transition-colors resize-none"
+              aria-invalid={shortfall("message")}
+              className={`${fieldClass("message")} resize-none`}
             />
 
-            <label className="flex items-start gap-3 cursor-pointer">
+            <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox" checked={form.privacy} onChange={e => set("privacy", e.target.checked)}
-                className="mt-0.5 accent-[#b8934a]"
+                className="w-4 h-4 shrink-0 accent-[#b8934a]"
               />
-              <span className="type-body text-stone-500">
+              <span className={`type-body ${shortfall("privacy") ? "text-red-700" : "text-stone-500"}`}>
                 I agree to the <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("open-legal", { detail: "privacy" }))} className="underline hover:text-stone-800 transition-colors">privacy policy</button>*
               </span>
             </label>
+
+            {missing.length > 0 && (
+              <div role="alert" className="border border-red-600 bg-red-50 px-4 py-3.5">
+                <p className="type-body text-red-700" style={{ fontSize: "13px", lineHeight: 1.7 }}>
+                  Before we can send this, please add {missing.length === 1 ? missing[0] : <>{missing.slice(0, -1).join(", ")} and {missing[missing.length - 1]}</>}.
+                </p>
+              </div>
+            )}
 
             {status === "error" && (
               <p className="type-body text-red-700" style={{ fontSize: "13px" }}>Something went wrong. Please try again or email info@ateliersupplygroup.com.au.</p>
@@ -204,9 +253,9 @@ export default function ContactPage() {
               {status === "sending" ? "Sending…" : <>Send Enquiry &nbsp;<span className="arrow">→</span></>}
             </button>
           </form>
-          )}
 
         </div>
+        )}
       </section>
     ),
 
