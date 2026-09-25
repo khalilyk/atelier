@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef, useState, useEffect } from "react";
 import { projectMeta, type Project } from "@/lib/projects";
 import { useT } from "./ContentProvider";
@@ -83,7 +84,8 @@ export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) 
         >
           {projects.map(({ name, location, img, href }) => (
             <Link key={name} href={href} className="flex-none w-full md:w-1/4">
-              <div className="relative h-[420px] overflow-hidden group cursor-pointer bg-stone-300" style={img ? { backgroundImage: `url('${img}')`, backgroundSize: "cover", backgroundPosition: "center" } : undefined}>
+              <div className="relative h-[420px] overflow-hidden group cursor-pointer bg-stone-300">
+                {img && <Image src={img} alt="" fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover object-center" />}
                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/25 transition-colors duration-300" />
                 <div className="absolute bottom-6 left-6 right-6 z-10">
                   <p className="type-product text-white mb-1" style={{ fontSize: "clamp(20px, 2.5vw, 36px)" }}>{name}</p>

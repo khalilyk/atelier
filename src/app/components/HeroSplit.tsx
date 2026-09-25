@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import SiteHeader from "./SiteHeader";
 import { useT } from "./ContentProvider";
 
@@ -78,8 +79,11 @@ export default function HeroSplit() {
     >
       <SiteHeader variant="overlay" menuOpenState={[menuOpen, setMenuOpen]} />
 
-      {/* CLASSIC image */}
-      <div className="absolute inset-0" style={{ backgroundImage: `url("${classicImg}")`, backgroundSize: "cover", backgroundPosition: "center" }}>
+      {/* CLASSIC image. This is the page's largest paint, so it goes through
+          next/image - a CSS background is fetched raw, at full size, and
+          cannot be preloaded. */}
+      <div className="absolute inset-0">
+        <Image src={classicImg} alt="" fill priority sizes="100vw" className="object-cover object-center" />
         <div className="absolute inset-0 bg-black/35" />
       </div>
 
@@ -90,7 +94,7 @@ export default function HeroSplit() {
           clipPath: signatureClip,
           transition: dragging ? "none" : "clip-path 0.05s ease-out"}}
       >
-        <div className="absolute inset-0" style={{ backgroundImage: `url("${signatureImg}")`, backgroundSize: "cover", backgroundPosition: "center" }} />
+        <Image src={signatureImg} alt="" fill priority sizes="100vw" className="object-cover object-center" />
         <div className="absolute inset-0 bg-black/35" />
       </div>
 
