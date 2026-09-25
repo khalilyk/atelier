@@ -47,7 +47,7 @@ export function HomeJournal({ posts = [] }: { posts?: JournalPost[] }) {
             <p className="type-label text-stone-500 mb-6">{t("home.journal.eyebrow")}</p>
             <h2 className="type-large text-stone-900 mb-8" style={{ fontSize: "clamp(32px, 4vw, 72px)" }}><Lines text={t("home.journal.headline")} /></h2>
             {t("home.journal.button") && (
-              <a href={viewAll} className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
+              <a href={viewAll} className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px inline-flex items-center min-h-9">
                 {t("home.journal.button")} &nbsp;<span className="arrow">→</span>
               </a>
             )}

@@ -117,7 +117,7 @@ export default function SiteHeader({ variant = "solid", menuOpenState, breadcrum
           </a>
         </nav>
         <div className="flex md:hidden flex-1 justify-end">
-          <button className="relative z-50 flex flex-col gap-[5px] p-1" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
+          <button className="relative z-50 flex flex-col items-center justify-center gap-[5px] w-11 h-11 -mr-2" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu" aria-expanded={menuOpen}>
             <span className={`block w-5 h-px bg-white/70 transition-all duration-300 ${menuOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
             <span className={`block w-5 h-px bg-white/70 transition-all duration-300 ${menuOpen ? "opacity-0" : ""}`} />
             <span className={`block w-5 h-px bg-white/70 transition-all duration-300 ${menuOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} />
@@ -126,9 +126,11 @@ export default function SiteHeader({ variant = "solid", menuOpenState, breadcrum
       </header>
 
       {/* Mobile drawer */}
-      <div className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-black/90 backdrop-blur-sm transition-opacity duration-300 md:hidden ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+      <div className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-3 bg-black/90 backdrop-blur-sm transition-opacity duration-300 md:hidden ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
         {Object.entries(NAV_LINKS).map(([label, href]) => (
-          <a key={label} href={href} className="type-nav text-white/70 hover:text-white transition-colors" onClick={() => setMenuOpen(false)}>{label}</a>
+          // The padding carries the gap, so each link is a full-height target
+          // rather than a 22px line of text with space around it.
+          <a key={label} href={href} className="type-nav text-white/70 hover:text-white transition-colors py-3 px-6 min-h-11 flex items-center" onClick={() => setMenuOpen(false)}>{label}</a>
         ))}
       </div>
     </>

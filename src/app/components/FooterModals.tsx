@@ -68,9 +68,9 @@ export default function FooterModals({ light = false }: { light?: boolean }) {
   return (
     <>
       <div className="flex items-center gap-3">
-        <button onClick={() => openModal("privacy")} className={`type-nav transition-colors ${light ? "text-stone-500 hover:text-stone-900" : "text-stone-600 hover:text-white"}`} style={{ fontSize: "10px" }}>Privacy Policy</button>
+        <button onClick={() => openModal("privacy")} className={`type-nav transition-colors py-2 ${light ? "text-stone-500 hover:text-stone-900" : "text-stone-600 hover:text-white"}`} style={{ fontSize: "10px" }}>Privacy Policy</button>
         <span className={light ? "text-stone-400" : "text-stone-700"} style={{ fontSize: "10px" }}>|</span>
-        <button onClick={() => openModal("terms")} className={`type-nav transition-colors ${light ? "text-stone-500 hover:text-stone-900" : "text-stone-600 hover:text-white"}`} style={{ fontSize: "10px" }}>Terms &amp; Conditions</button>
+        <button onClick={() => openModal("terms")} className={`type-nav transition-colors py-2 ${light ? "text-stone-500 hover:text-stone-900" : "text-stone-600 hover:text-white"}`} style={{ fontSize: "10px" }}>Terms &amp; Conditions</button>
       </div>
 
       {open && (

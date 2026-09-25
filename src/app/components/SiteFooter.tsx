@@ -22,14 +22,16 @@ export default function SiteFooter() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center md:items-start gap-4 md:gap-5 md:px-12 md:justify-center">
+          {/* gap-2 plus the padding on each link gives a full-height tap
+              target while keeping the spacing it had. */}
+          <div className="flex flex-col items-center md:items-start gap-2 md:gap-3 md:px-12 md:justify-center">
             {([
               ["Classic", "/classic"], ["Signature", "/signature"], ["How We Work", "/#how-we-work"],
               ["Projects", "/projects"], ["Journal", "/journal"], ["About", "/about"], ["Contact", "/contact"],
               // Pages you created and marked to show in the footer.
               ...extraPages.map((p) => [p.title, `/${p.slug}`] as [string, string]),
             ] as [string, string][]).map(([label, href]) => (
-              <a key={href} href={href} className="type-nav text-stone-300 hover:text-[#b8934a] transition-colors">{label}</a>
+              <a key={href} href={href} className="type-nav text-stone-300 hover:text-[#b8934a] transition-colors py-1.5 min-h-9 flex items-center">{label}</a>
             ))}
           </div>
 
@@ -42,7 +44,7 @@ export default function SiteFooter() {
             <a href={`mailto:${c.email}`} className="type-body text-white mb-6 hover:text-[#b8934a] transition-colors">{c.email}</a>
             <div className="w-8 h-px bg-white/20 mb-5" />
             <div className="flex flex-col gap-3">
-              <a href={igUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-stone-300 hover:text-white transition-colors">
+              <a href={igUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 py-1.5 min-h-9 text-stone-300 hover:text-white transition-colors">
                 <svg className="w-5 h-5 text-[#b8934a]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5" strokeWidth="1.5" />
                   <circle cx="12" cy="12" r="4" strokeWidth="1.5" />
@@ -61,7 +63,7 @@ export default function SiteFooter() {
 
         {/* Its own line, centred across the page. */}
         <div className="text-center pt-4 pb-6">
-          <a href="https://bybric.com" target="_blank" rel="noopener noreferrer" className="text-stone-500 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontWeight: 400, lineHeight: 1.8, fontSize: "14px" }}>made by bric</a>
+          <a href="https://bybric.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-9 px-2 text-stone-500 hover:text-white transition-colors" style={{ fontFamily: "var(--font-neue)", fontWeight: 400, lineHeight: 1.8, fontSize: "14px" }}>made by bric</a>
         </div>
       </div>
     </footer>

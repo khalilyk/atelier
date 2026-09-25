@@ -102,9 +102,18 @@ export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) 
 
       {/* Mobile dot indicators */}
       {isMobile && (
-        <div className="flex justify-center gap-2 py-4">
+        <div className="flex justify-center py-2">
           {projects.map((_, i) => (
-            <button key={i} onClick={() => setIndex(i)} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === index ? "bg-stone-700" : "bg-stone-300"}`} />
+            // The dot stays 6px; the padding around it is the tap target.
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Show project ${i + 1} of ${projects.length}`}
+              aria-current={i === index ? "true" : undefined}
+              className="flex items-center justify-center w-6 h-6"
+            >
+              <span className={`block w-1.5 h-1.5 rounded-full transition-colors ${i === index ? "bg-stone-700" : "bg-stone-300"}`} />
+            </button>
           ))}
         </div>
       )}
