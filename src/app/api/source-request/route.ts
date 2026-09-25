@@ -1,43 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { submissions } from "@/lib/admin-store";
+import { submissions, company as companyStore, Company } from "@/lib/admin-store";
 import { saveUpload } from "@/lib/uploads";
 import { escapeHtml } from "@/lib/escape-html";
+import { emailShell, panel, dataRows, paragraph } from "@/lib/email-layout";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "info@ateliersupplygroup.com.au";
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "info@ateliersupplygroup.com.au";
 
-function adminHtml(opts: { name: string; email: string; phone: string; productName: string; message: string; imageUrl: string; siteUrl: string }) {
-  const { name, email, phone, productName, message, imageUrl, siteUrl } = opts;
+function adminHtml(opts: { name: string; email: string; phone: string; productName: string; message: string; imageUrl: string; siteUrl: string; c: Company }) {
+  const { name, email, phone, productName, message, imageUrl, siteUrl, c } = opts;
   const imgSrc = imageUrl.startsWith("http") ? imageUrl : `${siteUrl}${imageUrl}`;
-  return `
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="background:#0d0c0b;margin:0;padding:40px 20px;font-family:Georgia,serif">
-  <div style="max-width:620px;margin:0 auto">
-    <p style="color:#b8934a;letter-spacing:0.15em;font-size:11px;font-family:Arial,sans-serif;margin-bottom:8px">ATELIER SUPPLY GROUP</p>
-    <h1 style="color:#e8e0d0;font-weight:300;font-size:28px;margin:0 0 8px">Source Request</h1>
-    <p style="color:#a08060;font-size:14px;margin:0 0 32px">A visitor spotted an item that isn't in our collection yet.</p>
-
-    ${productName ? `<div style="background:#111110;padding:24px;margin-bottom:24px"><p style="color:#b8934a;font-size:10px;letter-spacing:0.12em;font-family:Arial,sans-serif;margin:0 0 12px">ITEM</p><p style="color:#e8e0d0;line-height:1.7;margin:0;font-size:16px">${productName}</p></div>` : ""}
-
-    <div style="background:#111110;padding:24px;margin-bottom:24px">
-      <p style="color:#b8934a;font-size:10px;letter-spacing:0.12em;font-family:Arial,sans-serif;margin:0 0 12px">DESCRIPTION</p>
-      <p style="color:#e8e0d0;line-height:1.7;margin:0">${message || "-"}</p>
-    </div>
-
-    ${imageUrl ? `<div style="background:#111110;padding:24px;margin-bottom:24px"><p style="color:#b8934a;font-size:10px;letter-spacing:0.12em;font-family:Arial,sans-serif;margin:0 0 12px">REFERENCE IMAGE</p><a href="${imgSrc}" style="color:#b8934a"><img src="${imgSrc}" alt="Reference" style="max-width:100%;border-radius:8px;display:block;margin-bottom:8px"/>View full image →</a></div>` : ""}
-
-    <div style="background:#111110;padding:24px">
-      <p style="color:#b8934a;font-size:10px;letter-spacing:0.12em;font-family:Arial,sans-serif;margin:0 0 16px">FROM</p>
-      <p style="color:#e8e0d0;margin:0 0 8px"><strong style="color:#a08060">Name:</strong> ${name || "-"}</p>
-      <p style="color:#e8e0d0;margin:0 0 8px"><strong style="color:#a08060">Email:</strong> ${email}</p>
-      <p style="color:#e8e0d0;margin:0"><strong style="color:#a08060">Phone:</strong> ${phone || "-"}</p>
-    </div>
-  </div>
-</body>
-</html>`;
+  const body = [
+    productName ? panel("Item", paragraph(productName)) : "",
+    panel("Description", paragraph(message || "-")),
+    imageUrl ? panel("Reference image", `<a href="${imgSrc}" target="_blank" style="color:#b8934a;text-decoration:none;"><img src="${imgSrc}" alt="Reference" width="520" style="display:block;width:100%;max-width:520px;border:0;margin-bottom:10px;" />View full image &rarr;</a>`) : "",
+    panel("From", dataRows([
+      ["Name", name],
+      ["Email", `<a href="mailto:${email}" style="color:#e8e0d0;">${email}</a>`],
+      ["Phone", phone ? `<a href="tel:${phone.replace(/[^+\d]/g, "")}" style="color:#e8e0d0;">${phone}</a>` : ""],
+    ])),
+  ].join("");
+  return emailShell({
+    preheader: `Source request${productName ? ` - ${productName}` : ""} from ${name || email}`,
+    eyebrow: "Source request",
+    heading: "Source Request",
+    intro: "A visitor spotted an item that isn&rsquo;t in our collection yet.",
+    body, company: c, siteUrl,
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -69,7 +59,7 @@ export async function POST(req: NextRequest) {
         from: FROM_EMAIL,
         to: ADMIN_EMAIL,
         subject: `Source Request${productName ? ` - ${productName}` : ""} from ${name || email}`,
-        html: adminHtml({ name: escapeHtml(name), email: escapeHtml(email), phone: escapeHtml(phone), productName: escapeHtml(productName), message: escapeHtml(message), imageUrl, siteUrl }),
+        html: adminHtml({ name: escapeHtml(name), email: escapeHtml(email), phone: escapeHtml(phone), productName: escapeHtml(productName), message: escapeHtml(message), imageUrl, siteUrl, c: await companyStore.get() }),
       });
     } catch (err) {
       console.error("Source request email failed", err);
