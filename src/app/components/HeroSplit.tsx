@@ -50,22 +50,32 @@ export default function HeroSplit() {
     if (t) getSplit(t.clientX, t.clientY);
   }, [dragging, getSplit]);
 
+  // The divider is draggable by mouse and touch; arrow keys give the same
+  // control to anyone not using a pointer.
+  const onDividerKey = useCallback((e: React.KeyboardEvent) => {
+    const step = e.shiftKey ? 10 : 4;
+    const back = e.key === "ArrowUp" || e.key === "ArrowLeft";
+    const fwd = e.key === "ArrowDown" || e.key === "ArrowRight";
+    if (!back && !fwd && e.key !== "Home" && e.key !== "End") return;
+    e.preventDefault();
+    setSplit((p) => {
+      if (e.key === "Home") return 10;
+      if (e.key === "End") return 90;
+      return Math.min(Math.max(p + (fwd ? step : -step), 10), 90);
+    });
+  }, []);
+
   const classicVisible = split >= 48;
   const signatureVisible = split <= 52;
 
-  const signatureClip = isMobile
-    ? `inset(${split}% 0 0 0)`
-    : `inset(0 0 0 ${split}%)`;
 
-  const dividerStyle = isMobile
-    ? { top: `${split}%`, left: 0, right: 0, transform: "translateY(-50%)", transition: dragging ? "none" : "top 0.05s ease-out" }
-    : { left: `${split}%`, top: 0, bottom: 0, transform: "translateX(-50%)", transition: dragging ? "none" : "left 0.05s ease-out" };
 
   return (
     <section
       ref={ref}
-      className="relative h-screen overflow-hidden select-none"
+      className="hero-split relative h-screen overflow-hidden select-none"
       style={{
+        ["--split" as string]: `${split}%`,
         cursor: !isMobile && (dragging || nearDivider) ? "col-resize" : "default",
         touchAction: isMobile && dragging ? "none" : undefined,
       }}
@@ -89,10 +99,8 @@ export default function HeroSplit() {
 
       {/* SIGNATURE image - clipped */}
       <div
-        className="absolute inset-0"
-        style={{
-          clipPath: signatureClip,
-          transition: dragging ? "none" : "clip-path 0.05s ease-out"}}
+        className="hero-sig-clip absolute inset-0"
+        style={{ transition: dragging ? "none" : "clip-path 0.05s ease-out" }}
       >
         <Image src={signatureImg} alt="" fill priority sizes="100vw" className="object-cover object-center" />
         <div className="absolute inset-0 bg-black/35" />
@@ -100,11 +108,8 @@ export default function HeroSplit() {
 
       {/* CLASSIC text */}
       <div
-        className="absolute z-20 transition-opacity duration-300"
+        className="hero-classic-text absolute z-20 transition-opacity duration-300"
         style={{
-          ...(isMobile
-            ? { top: "28%", left: "50%", transform: "translate(-50%, -50%)", textAlign: "center" }
-            : { top: "50%", left: "4rem", transform: "translateY(-50%)" }),
           opacity: classicVisible ? 1 : 0,
           pointerEvents: classicVisible ? "auto" : "none"}}
       >
@@ -118,11 +123,9 @@ export default function HeroSplit() {
 
       {/* SIGNATURE text */}
       <div
-        className="absolute z-20 transition-opacity duration-300"
+        className="hero-sig-text absolute z-20 transition-opacity duration-300"
         style={{
-          ...(isMobile
-            ? { top: `calc(${split}% + 22%)`, left: "50%", transform: "translateX(-50%)", textAlign: "center", transition: `opacity 0.3s, top ${dragging ? "0ms" : "50ms"} ease-out` }
-            : { left: `calc(${split}% + 2rem)`, top: "50%", transform: "translateY(-50%)", transition: `opacity 0.3s, left ${dragging ? "0ms" : "50ms"} ease-out` }),
+          transition: `opacity 0.3s, top ${dragging ? "0ms" : "50ms"} ease-out, left ${dragging ? "0ms" : "50ms"} ease-out`,
           opacity: signatureVisible ? 1 : 0,
           pointerEvents: signatureVisible ? "auto" : "none"}}
       >
@@ -135,20 +138,30 @@ export default function HeroSplit() {
       </div>
 
       {/* DIVIDER */}
-      <div className="absolute z-20 flex items-center justify-center" style={dividerStyle}>
-        {isMobile ? (
+      <div className="hero-divider absolute z-20 flex items-center justify-center" style={{ transition: dragging ? "none" : "top 0.05s ease-out, left 0.05s ease-out" }}>
+        <div className="contents md:hidden">
           <>
             <div className="w-full h-px bg-white/30" />
             <div
               onTouchStart={() => setDragging(true)}
-              className="absolute w-12 h-8 rounded-full bg-white/10 border border-white/40 backdrop-blur-sm flex flex-col items-center justify-center leading-none"
+              onKeyDown={onDividerKey}
+              role="slider"
+              tabIndex={0}
+              aria-label="Show more of Classic or Signature"
+              aria-orientation="vertical"
+              aria-valuemin={10}
+              aria-valuemax={90}
+              aria-valuenow={Math.round(split)}
+              aria-valuetext={`${Math.round(split)}% Classic, ${100 - Math.round(split)}% Signature`}
+              className="absolute w-12 h-8 rounded-full bg-white/10 border border-white/40 backdrop-blur-sm flex flex-col items-center justify-center leading-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
               style={{ touchAction: "none" }}
             >
               <span className="text-white/70 text-[9px] -mb-0.5">⌃</span>
               <span className="text-white/70 text-[9px]">⌄</span>
             </div>
           </>
-        ) : (
+        </div>
+        <div className="hidden md:contents">
           <>
             <div className="w-px h-full bg-white/30" />
             <div className="absolute w-8 h-8 rounded-full bg-white/10 border border-white/40 backdrop-blur-sm flex items-center justify-center gap-1">
@@ -156,7 +169,7 @@ export default function HeroSplit() {
               <span className="text-white/70 text-[10px]">›</span>
             </div>
           </>
-        )}
+        </div>
       </div>
     </section>
   );

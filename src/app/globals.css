@@ -163,3 +163,21 @@ body {
   from { transform: scale(1); }
   to   { transform: scale(1.12); }
 }
+
+/* ── HERO SPLIT ──
+   Orientation comes from a media query, not from JavaScript measuring the
+   window after mount. Driving it from state meant the server sent the
+   desktop split and a phone repainted vertically after hydration, which is
+   a layout shift on every first visit. --split carries the drag position. */
+.hero-split { --split: 50%; }
+.hero-sig-clip { clip-path: inset(0 0 0 var(--split)); }
+.hero-divider { left: var(--split); top: 0; bottom: 0; transform: translateX(-50%); }
+.hero-classic-text { top: 50%; left: 4rem; transform: translateY(-50%); }
+.hero-sig-text { left: calc(var(--split) + 2rem); top: 50%; transform: translateY(-50%); }
+
+@media (max-width: 767px) {
+  .hero-sig-clip { clip-path: inset(var(--split) 0 0 0); }
+  .hero-divider { top: var(--split); left: 0; right: 0; bottom: auto; transform: translateY(-50%); }
+  .hero-classic-text { top: 28%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+  .hero-sig-text { top: calc(var(--split) + 22%); left: 50%; bottom: auto; transform: translateX(-50%); text-align: center; }
+}
