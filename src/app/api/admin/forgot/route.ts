@@ -5,7 +5,7 @@ import { generateResetToken, hashToken } from "@/lib/admin-auth";
 
 export const dynamic = "force-dynamic";
 
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@atelier.thisisnn.com";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
 const TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 function resetHtml(name: string, link: string) {

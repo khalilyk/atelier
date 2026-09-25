@@ -6,7 +6,7 @@ import { escapeHtml } from "@/lib/escape-html";
 
 export const dynamic = "force-dynamic";
 
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@atelier.thisisnn.com";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 

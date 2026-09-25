@@ -4,8 +4,8 @@ import { Resend } from "resend";
 import { submissions } from "@/lib/admin-store";
 import { saveUpload } from "@/lib/uploads";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@atelier.thisisnn.com";
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@atelier.thisisnn.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "info@ateliersupplygroup.com.au";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
 
 type Item = { name: string; details: string };
 

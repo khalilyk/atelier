@@ -6,7 +6,7 @@ import { escapeHtml } from "@/lib/escape-html";
 // Consolidated project enquiries are sent to the Atelier project inbox(es).
 const PROJECT_EMAILS = (process.env.ENQUIRY_EMAILS ?? "ambert@ateliersupplygroup.com.au,info@ateliersupplygroup.com.au")
   .split(",").map(e => e.trim()).filter(Boolean);
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@atelier.thisisnn.com";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
 
 type Item = {
   name: string;
@@ -101,7 +101,7 @@ function clientHtml(items: Item[], name: string) {
       </tbody>
     </table>
 
-    <p style="color:#6b6560;font-size:13px;line-height:1.7">Atelier Supply Group<br>atelier.thisisnn.com</p>
+    <p style="color:#6b6560;font-size:13px;line-height:1.7">Atelier Supply Group<br>www.ateliersupplygroup.com.au</p>
   </div>
 </body>
 </html>`;

@@ -3,8 +3,8 @@ import { escapeHtml } from "@/lib/escape-html";
 import { Resend } from "resend";
 import { submissions } from "@/lib/admin-store";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@atelier.thisisnn.com";
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@atelier.thisisnn.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "info@ateliersupplygroup.com.au";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
 
 function adminHtml(name: string, email: string) {
   return `
@@ -35,7 +35,7 @@ function clientHtml(name: string) {
     <p style="color:#b8934a;letter-spacing:0.15em;font-size:11px;font-family:Arial,sans-serif;margin-bottom:8px">ATELIER SUPPLY GROUP</p>
     <h1 style="color:#e8e0d0;font-weight:300;font-size:28px;margin:0 0 12px">Thank you, ${name.split(" ")[0]}.</h1>
     <p style="color:#a08060;font-size:15px;line-height:1.7;margin:0 0 24px">We've received your request for our capability statement. Our team will send it through to you shortly.</p>
-    <p style="color:#6b6560;font-size:13px;line-height:1.7">Atelier Supply Group<br>atelier.thisisnn.com</p>
+    <p style="color:#6b6560;font-size:13px;line-height:1.7">Atelier Supply Group<br>www.ateliersupplygroup.com.au</p>
   </div>
 </body>
 </html>`;

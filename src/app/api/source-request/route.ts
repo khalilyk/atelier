@@ -4,8 +4,8 @@ import { submissions } from "@/lib/admin-store";
 import { saveUpload } from "@/lib/uploads";
 import { escapeHtml } from "@/lib/escape-html";
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@atelier.thisisnn.com";
-const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@atelier.thisisnn.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "info@ateliersupplygroup.com.au";
+const FROM_EMAIL = process.env.FROM_EMAIL ?? "enquiries@ateliersupplygroup.com.au";
 
 function adminHtml(opts: { name: string; email: string; phone: string; productName: string; message: string; imageUrl: string; siteUrl: string }) {
   const { name, email, phone, productName, message, imageUrl, siteUrl } = opts;
