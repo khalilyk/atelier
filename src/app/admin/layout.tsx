@@ -3,6 +3,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icons, ACCENT, type IconName } from "./_icons";
+import { roleLabel } from "@/lib/roles";
 
 const NAV: { section: string; items: { label: string; href: string; icon: IconName; tab?: "classic" | "signature" }[] }[] = [
   { section: "Workspace", items: [
@@ -17,14 +18,13 @@ const NAV: { section: string; items: { label: string; href: string; icon: IconNa
     { label: "Quotes", href: "/admin/quotes", icon: "pages" },
     { label: "Submissions", href: "/admin/submissions", icon: "inbox" },
     { label: "Download Leads", href: "/admin/leads", icon: "users" },
-    { label: "Team", href: "/admin/team", icon: "team" },
+    { label: "Team & Accounts", href: "/admin/team", icon: "team" },
   ]},
   { section: "Support", items: [
     { label: "Help", href: "/admin/help", icon: "pages" },
   ]},
   { section: "Backend", items: [
     { label: "Company Details", href: "/admin/company", icon: "pages" },
-    { label: "Accounts", href: "/admin/admins", icon: "users" },
     { label: "Backups", href: "/admin/backups", icon: "pages" },
     { label: "Analytics", href: "/admin/analytics", icon: "analytics" },
   ]},
@@ -71,7 +71,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const firstName = me.name.split(" ")[0];
   const initials = me.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
-  const roleLabel = me.role === "super-admin" ? "Super Admin" : me.role === "admin" ? "Administrator" : me.role;
+  const label = roleLabel(me.role);
 
   const logout = async () => {
     await fetch("/api/admin/auth", { method: "DELETE" }).catch(() => {});
@@ -178,7 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[13px] font-bold" style={{ background: `linear-gradient(135deg, ${ACCENT}, #8a6d38)` }}>{initials}</span>
               <div className="hidden md:block leading-tight">
                 <p className="text-[12.5px] font-semibold text-stone-800">{me.name}</p>
-                <p className="text-[10.5px] text-stone-400">{roleLabel}</p>
+                <p className="text-[10.5px] text-stone-400">{label}</p>
               </div>
             </div>
           </div>
