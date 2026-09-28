@@ -177,7 +177,7 @@ export type AdminUser = {
   id: string;
   name: string;
   email: string;
-  role: "super-admin" | "editor";
+  role: "super-admin" | "admin" | "editor";
   passwordHash: string;
   createdAt: string;
   resetTokenHash?: string;
@@ -187,7 +187,6 @@ export type AdminUser = {
 export type TeamMember = {
   id: string;
   name: string;
-  role: string;
   bio: string;
   email: string;
   phone?: string;
@@ -991,38 +990,7 @@ export const quotes = {
 
 // ── vCards ─────────────────────────────────────────────────────────────────
 
-export type VCard = {
-  id: string;
-  name: string;
-  title: string;
-  company: string;
-  email: string;
-  phone: string;
-  mobile: string;
-  website: string;
-  address: string;
-  linkedin: string;
-  createdAt: string;
-};
 
-export const vcards = {
-  list: () => readStore<VCard[]>("vcards.json", []),
-  findById: async (id: string) => (await vcards.list()).find(v => v.id === id),
-  save: (all: VCard[]) => writeStore("vcards.json", all),
-  create: async (data: Omit<VCard, "id" | "createdAt">) => {
-    const all = await vcards.list();
-    const item: VCard = { ...data, id: Date.now().toString(), createdAt: new Date().toISOString() };
-    all.push(item);
-    await vcards.save(all);
-    return item;
-  },
-  update: async (id: string, data: Partial<VCard>) => {
-    await vcards.save((await vcards.list()).map(v => v.id === id ? { ...v, ...data } : v));
-  },
-  delete: async (id: string) => {
-    await vcards.save((await vcards.list()).filter(v => v.id !== id));
-  },
-};
 
 // ── Submissions ──────────────────────────────────────────────────────────────
 // Stored append-only: one blob (or file) per submission. This avoids the

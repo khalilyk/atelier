@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { pages } from "@/lib/admin-store";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -8,6 +9,9 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   // { slug, ... } saves the search listing for one address, creating it if new.
   if (body.slug) {

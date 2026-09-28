@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { journal } from "@/lib/admin-store";
 import { snapshot } from "@/lib/blob-backup";
 import { JOURNAL_RESERVED, emptyPost, journalSlug, sortPosts, type JournalPost } from "@/lib/journal";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,9 @@ async function freeSlug(wanted: string) {
 
 // Create: { title, slug? } — or copy an existing post with { duplicateOf }.
 export async function POST(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   const source = body.duplicateOf ? await journal.get(journalSlug(String(body.duplicateOf))) : null;
   if (body.duplicateOf && !source) return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -57,6 +61,9 @@ export async function POST(req: NextRequest) {
 // Update: the editor sends the whole record, so it is written as-is (whitelisted).
 // Renaming the web address writes the new record and removes the old one.
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   const slug = journalSlug(String(body.slug ?? ""));
   const previous = journalSlug(String(body.previousSlug ?? slug));
@@ -82,6 +89,9 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   await snapshot("journal");
   const { slug } = await req.json();
   const key = journalSlug(String(slug ?? ""));

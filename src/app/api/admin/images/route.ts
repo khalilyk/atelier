@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { images } from "@/lib/admin-store";
 import { IMAGE_SLOTS, SLOT_BY_KEY } from "@/lib/image-slots";
 import { snapshot } from "@/lib/blob-backup";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,9 @@ export async function GET() {
 
 // Merge a partial map of slotKey -> url. Send "" to clear a slot.
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   await snapshot("images");
   const patch = await req.json();
   if (!patch || typeof patch !== "object") {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ALL_SCOPES, createBackup, deleteBackup, listBackups, readBackup, restoreBackup, type Scope } from "@/lib/blob-backup";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -10,6 +11,9 @@ export const maxDuration = 60;
 // PATCH {id}     -> restore (optionally only some scopes)
 // DELETE {id}    -> remove one backup
 export async function GET(req: NextRequest) {
+  const gate = await requireArea(req, "accounts");
+  if (gate.error) return gate.error;
+
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json(await listBackups());
   const backup = await readBackup(id);
@@ -18,12 +22,18 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const gate = await requireArea(req, "accounts");
+  if (gate.error) return gate.error;
+
   const { label } = await req.json().catch(() => ({ label: "" }));
   const meta = await createBackup({ kind: "manual", label: String(label || "Manual backup") });
   return NextResponse.json(meta);
 }
 
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "accounts");
+  if (gate.error) return gate.error;
+
   const { id, scopes } = await req.json();
   if (!id) return NextResponse.json({ error: "Missing backup id" }, { status: 400 });
   const wanted = Array.isArray(scopes) ? (scopes.filter((s: string) => (ALL_SCOPES as string[]).includes(s)) as Scope[]) : undefined;
@@ -37,6 +47,9 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const gate = await requireArea(req, "accounts");
+  if (gate.error) return gate.error;
+
   const { id } = await req.json();
   if (!id) return NextResponse.json({ error: "Missing backup id" }, { status: 400 });
   await deleteBackup(String(id));

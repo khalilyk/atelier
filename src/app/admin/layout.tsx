@@ -3,30 +3,30 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Icons, ACCENT, type IconName } from "./_icons";
-import { roleLabel } from "@/lib/roles";
+import { roleLabel, can, type Area } from "@/lib/roles";
 
-const NAV: { section: string; items: { label: string; href: string; icon: IconName; tab?: "classic" | "signature" }[] }[] = [
+const NAV: { section: string; items: { label: string; href: string; icon: IconName; area: Area; tab?: "classic" | "signature" }[] }[] = [
   { section: "Workspace", items: [
-    { label: "Pages", href: "/admin/content", icon: "pages" },
-    { label: "Categories", href: "/admin/categories", icon: "pages" },
-    { label: "Journal", href: "/admin/journal", icon: "pages" },
-    { label: "Projects", href: "/admin/projects", icon: "pages" },
-    { label: "Products", href: "/admin/products", icon: "pages" },
-    { label: "Media Library", href: "/admin/media", icon: "media" },
+    { label: "Pages", href: "/admin/content", icon: "pages", area: "content" },
+    { label: "Categories", href: "/admin/categories", icon: "pages", area: "content" },
+    { label: "Journal", href: "/admin/journal", icon: "pages", area: "content" },
+    { label: "Projects", href: "/admin/projects", icon: "pages", area: "content" },
+    { label: "Products", href: "/admin/products", icon: "pages", area: "content" },
+    { label: "Media Library", href: "/admin/media", icon: "media", area: "content" },
   ]},
   { section: "Company", items: [
-    { label: "Quotes", href: "/admin/quotes", icon: "pages" },
-    { label: "Submissions", href: "/admin/submissions", icon: "inbox" },
-    { label: "Download Leads", href: "/admin/leads", icon: "users" },
-    { label: "Team & Accounts", href: "/admin/team", icon: "team" },
+    { label: "Quotes", href: "/admin/quotes", icon: "pages", area: "business" },
+    { label: "Submissions", href: "/admin/submissions", icon: "inbox", area: "business" },
+    { label: "Download Leads", href: "/admin/leads", icon: "users", area: "business" },
+    { label: "Team", href: "/admin/team", icon: "team", area: "accounts" },
   ]},
   { section: "Support", items: [
-    { label: "Help", href: "/admin/help", icon: "pages" },
+    { label: "Help", href: "/admin/help", icon: "pages", area: "content" },
   ]},
   { section: "Backend", items: [
-    { label: "Company Details", href: "/admin/company", icon: "pages" },
-    { label: "Backups", href: "/admin/backups", icon: "pages" },
-    { label: "Analytics", href: "/admin/analytics", icon: "analytics" },
+    { label: "Company Details", href: "/admin/company", icon: "pages", area: "business" },
+    { label: "Backups", href: "/admin/backups", icon: "pages", area: "accounts" },
+    { label: "Analytics", href: "/admin/analytics", icon: "analytics", area: "business" },
   ]},
 ];
 
@@ -108,10 +108,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Icons.dashboard size={18} /> Dashboard
           </a>
 
-          {NAV.map(group => (
+          {NAV.map(group => {
+            // A section with nothing this role can open is not shown at all.
+            const items = group.items.filter(i => can(me?.role, i.area));
+            if (!items.length) return null;
+            return (
             <div key={group.section} className="mt-6">
               <p className="px-3 mb-2 text-[10px] font-bold tracking-[0.14em] uppercase text-white/30">{group.section}</p>
-              {group.items.map(item => {
+              {items.map(item => {
                 const Icon = Icons[item.icon];
                 const active = item.tab
                   ? pathname === "/admin/products" && tabParam === item.tab
@@ -133,7 +137,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 );
               })}
             </div>
-          ))}
+            );
+          })}
         </nav>
 
         {/* Quick actions */}

@@ -4,6 +4,7 @@ import { RESERVED_SLUGS, slugify, templateDefaults, type CustomCategory, type Ca
 import { CATEGORY_META } from "@/app/classic/data";
 import { getContent } from "@/lib/get-content";
 import { snapshot } from "@/lib/blob-backup";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +35,9 @@ async function freeSlug(wanted: string) {
 
 // Create: { label, template, slug? } — or copy an existing one with { duplicateOf }.
 export async function POST(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
 
   // ── Copying one of the three built-in categories makes a new editable
@@ -112,6 +116,9 @@ export async function POST(req: NextRequest) {
 // The editor always sends the complete record, so the update is written as-is
 // (whitelisted) without re-reading the store - no stale-read race.
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   const slug = String(body.slug ?? "");
   if (!slug || slug !== slugify(slug)) return NextResponse.json({ error: "Invalid category" }, { status: 400 });
@@ -131,6 +138,9 @@ export async function PATCH(req: NextRequest) {
 
 // Delete: { slug }  (its products stay in the products store but become unreachable)
 export async function DELETE(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   await snapshot("categories");
   const { slug } = await req.json();
   if (!(await customCategories.exists(String(slug)))) return NextResponse.json({ error: "Category not found" }, { status: 404 });

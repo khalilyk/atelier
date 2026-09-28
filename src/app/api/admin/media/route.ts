@@ -3,10 +3,14 @@ import { saveUpload, listUploads, deleteUpload } from "@/lib/uploads";
 import { referencedImages } from "@/lib/media-inventory";
 import { documents } from "@/lib/admin-store";
 import { RESOURCES } from "@/lib/download-token";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const all = (await listUploads()).map((f) => ({ ...f, source: "upload" as const, usedBy: "" }));
   // ?with=site also lists the pictures and documents the site itself provides.
   if (req.nextUrl.searchParams.get("with") !== "site") return NextResponse.json(all);
@@ -27,6 +31,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const formData = await req.formData();
   // Replacing a gated document: the file is uploaded and pointed at that resource.
   const resource = String(formData.get("resource") ?? "");
@@ -52,6 +59,9 @@ export async function POST(req: NextRequest) {
 
 /** Put a gated document back to the one that ships with the site. */
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const { resource, action } = await req.json();
   if (!resource || !RESOURCES[String(resource)]) {
     return NextResponse.json({ error: "Unknown document" }, { status: 400 });
@@ -61,6 +71,9 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   // One file, or a batch from the library's bulk selection.
   const items: string[] = Array.isArray(body.items) ? body.items : [body.url || body.name];

@@ -21,7 +21,6 @@ export const Icons = {
   users: wrap(<><circle cx="9" cy="8" r="3" /><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" /><path d="M16 3.5a3 3 0 010 5.8M21 20a5 5 0 00-4-4.9" /></>),
   seo: wrap(<><circle cx="11" cy="11" r="7" /><path d="M16 16l5 5" /><path d="M11 8v6M8 11h6" /></>),
   analytics: wrap(<><path d="M4 19V5" /><path d="M4 19h16" /><path d="M8 16l3-4 3 2 4-6" /></>),
-  vcard: wrap(<><rect x="3" y="5" width="18" height="14" rx="2" /><circle cx="9" cy="10" r="2" /><path d="M7 15c0-1.1.9-2 2-2s2 .9 2 2" /><path d="M14 10h3M14 13h2" /></>),
   user: wrap(<><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></>),
   globe: wrap(<><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.5 2.5 15 0 18M12 3c-2.5 2.5-2.5 15 0 18" /></>),
   logout: wrap(<><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><path d="M16 17l5-5-5-5M21 12H9" /></>),

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { projects } from "@/lib/admin-store";
 import { snapshot } from "@/lib/blob-backup";
 import { PROJECT_RESERVED, emptyProject, projectSlug, sortProjects, type Project } from "@/lib/projects";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,9 @@ async function freeSlug(wanted: string) {
 
 // Create: { title, slug? } — or copy an existing project with { duplicateOf }.
 export async function POST(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   const source = body.duplicateOf ? await projects.get(projectSlug(String(body.duplicateOf))) : null;
   if (body.duplicateOf && !source) return NextResponse.json({ error: "Project not found" }, { status: 404 });
@@ -56,6 +60,9 @@ export async function POST(req: NextRequest) {
 // Update: the editor sends the whole record, so it is written as-is (whitelisted).
 // Renaming the web address writes the new record and removes the old one.
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   const body = await req.json();
   const slug = projectSlug(String(body.slug ?? ""));
   const previous = projectSlug(String(body.previousSlug ?? slug));
@@ -80,6 +87,9 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   await snapshot("projects");
   const { slug } = await req.json();
   const key = projectSlug(String(slug ?? ""));

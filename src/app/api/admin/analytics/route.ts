@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analytics } from "@/lib/admin-store";
 import { dayKey, mergeSummaries, recentDays, summarise, type DaySummary } from "@/lib/analytics";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,9 @@ export const dynamic = "force-dynamic";
  * quick. Today is always counted live from the raw records.
  */
 export async function GET(req: NextRequest) {
+  const gate = await requireArea(req, "business");
+  if (gate.error) return gate.error;
+
   const days = Math.min(365, Math.max(1, Number(req.nextUrl.searchParams.get("days")) || 30));
   const today = dayKey();
 

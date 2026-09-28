@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { products } from "@/lib/admin-store";
 import { makeSku } from "@/lib/sku";
+import { requireArea } from "@/lib/admin-guard";
 
 async function parsePdf(buffer: Buffer): Promise<string> {
   // pdf-parse v2 - class-based API
@@ -81,6 +82,9 @@ function extractProducts(text: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   try {
     const formData = await req.formData();
     const file = formData.get("pdf") as File | null;
@@ -105,6 +109,9 @@ export async function POST(req: NextRequest) {
 
 // Save extracted products to a category
 export async function PUT(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   try {
     const body = await req.json() as {
       catId: string;

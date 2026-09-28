@@ -6,7 +6,7 @@ type Meta = { id: string; createdAt: string; kind: "daily" | "manual" | "pre-cha
 const SCOPE_LABEL: Record<string, string> = {
   "content.json": "Page content", "product-content.json": "Product edits", "products.json": "Catalog",
   "pages.json": "SEO pages", "settings.json": "SEO settings", "company.json": "Company details",
-  "team.json": "Team", "quotes.json": "Quotes", "admins.json": "Admin accounts", "vcards.json": "Digital cards",
+  "team.json": "Team", "quotes.json": "Quotes", "admins.json": "Admin accounts",
   "joinery-settings.json": "Joinery Bot settings", leads: "Download leads", categories: "Categories",
   images: "Image slots", submissions: "Enquiries", journal: "Journal posts",
 };

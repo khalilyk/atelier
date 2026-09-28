@@ -1,20 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { submissions } from "@/lib/admin-store";
 import { snapshot } from "@/lib/blob-backup";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const gate = await requireArea(req, "business");
+  if (gate.error) return gate.error;
+
   return NextResponse.json(await submissions.list(), { headers: { "Cache-Control": "no-store" } });
 }
 
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "business");
+  if (gate.error) return gate.error;
+
   const { id, ...data } = await req.json();
   await submissions.update(id, data);
   return NextResponse.json({ ok: true });
 }
 
 export async function DELETE(req: NextRequest) {
+  const gate = await requireArea(req, "business");
+  if (gate.error) return gate.error;
+
   await snapshot("submissions");
   const { id } = await req.json();
   await submissions.delete(id);

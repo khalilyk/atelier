@@ -3,6 +3,7 @@ import { productContent, customCategories } from "@/lib/admin-store";
 import { ALL_PRODUCTS } from "@/app/classic/data";
 import { listProducts as listSignature, signatureOverrideCategory } from "@/app/signature/data";
 import { snapshot } from "@/lib/blob-backup";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -35,6 +36,9 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   await snapshot("product-content.json");
   const data = await req.json();
   if (!data || typeof data !== "object") {

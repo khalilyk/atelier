@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { content } from "@/lib/admin-store";
 import { CONTENT_REGISTRY } from "@/lib/content-registry";
 import { snapshot } from "@/lib/blob-backup";
+import { requireArea } from "@/lib/admin-guard";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,9 @@ export async function GET() {
 }
 
 export async function PATCH(req: NextRequest) {
+  const gate = await requireArea(req, "content");
+  if (gate.error) return gate.error;
+
   await snapshot("content.json");
   const data = await req.json();
   if (!data || typeof data !== "object") {

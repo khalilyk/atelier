@@ -9,13 +9,26 @@ type Data = { days: DaySummary[]; totals: Omit<DaySummary, "day"> };
 /** The last 30 days of traffic, on the dashboard. Refreshes while open. */
 export default function DashboardViews() {
   const [data, setData] = useState<Data | null>(null);
+  // An editor has no access to analytics, so the panel stays out of their way
+  // rather than showing an error where the numbers should be.
+  const [allowed, setAllowed] = useState(true);
 
   useEffect(() => {
-    const load = () => { void fetch("/api/admin/analytics?days=30").then((r) => r.json()).then(setData).catch(() => {}); };
+    const load = () => {
+      void fetch("/api/admin/analytics?days=30")
+        .then((r) => {
+          if (r.status === 403) { setAllowed(false); return null; }
+          return r.ok ? r.json() : null;
+        })
+        .then((d) => { if (d) setData(d); })
+        .catch(() => {});
+    };
     load();
     const t = setInterval(load, 60_000);
     return () => clearInterval(t);
   }, []);
+
+  if (!allowed) return null;
 
   const totals = data?.totals;
   const pages = top(totals?.paths ?? {}, 5);
