@@ -29,10 +29,14 @@ export default function TeamPage() {
   }, []);
 
   useEffect(() => {
+    // The endpoint answers { admin: {...} }, not the person directly.
     fetch("/api/admin/auth")
       .then((r) => r.json())
-      .then((who) => { setMe(who); return who; })
-      .then((who) => (isSuperAdmin(who?.role) ? load() : null))
+      .then((d) => {
+        const who = d?.admin ?? null;
+        setMe(who);
+        return who && isSuperAdmin(who.role) ? load() : null;
+      })
       .catch(() => setMe(null))
       .finally(() => setLoaded(true));
   }, [load]);
