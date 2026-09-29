@@ -19,6 +19,7 @@ export default function TeamPage() {
   const [form, setForm] = useState({ ...BLANK });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [note, setNote] = useState("");
   const [loaded, setLoaded] = useState(false);
 
   const boss = isSuperAdmin(me?.role);
@@ -54,7 +55,7 @@ export default function TeamPage() {
 
   async function save() {
     if (!form.name.trim() || !form.email.trim()) { setError("A name and email are needed."); return; }
-    if (isNew && !form.password) { setError("Set a password so they can sign in."); return; }
+
     setSaving(true); setError("");
     const body: Record<string, unknown> = { name: form.name, email: form.email, role: form.role };
     if (form.password) body.password = form.password;
@@ -64,10 +65,23 @@ export default function TeamPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+    const out = await res.json().catch(() => ({}));
     setSaving(false);
-    if (!res.ok) { setError((await res.json()).error ?? "Could not save."); return; }
+    if (!res.ok) { setError(out.error ?? "Could not save."); return; }
+    if (out.warning) alert(out.warning);
+    else if (out.invited) setNote(`${form.name.split(" ")[0]} has been emailed a link to set their password.`);
     setEditing(null);
     load();
+  }
+
+  async function sendLink(p: Person) {
+    if (!confirm(`Email ${p.name} a link to set a new password?`)) return;
+    const res = await fetch("/api/admin/admins", {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: p.id }),
+    });
+    setNote(res.ok ? `Sent to ${p.email}.` : "");
+    if (!res.ok) alert((await res.json()).error ?? "Could not send.");
   }
 
   async function remove(p: Person) {
@@ -103,9 +117,12 @@ export default function TeamPage() {
           Add person
         </button>
       </div>
-      <p className="text-stone-500 text-sm mb-8 max-w-xl leading-relaxed">
+      <p className="text-stone-500 text-sm mb-4 max-w-xl leading-relaxed">
         Everyone here can sign in to the admin. What they can reach depends on their role.
       </p>
+      {note && (
+        <p className="text-sm text-[#b8934a] bg-[#b8934a]/8 border border-[#b8934a]/20 rounded-lg px-4 py-3 mb-6">{note}</p>
+      )}
 
       <div className="grid grid-cols-1 gap-3 mb-10">
         {people.map((p) => (
@@ -121,6 +138,7 @@ export default function TeamPage() {
               {roleLabel(p.role)}
             </span>
             <div className="flex gap-3 shrink-0 items-center">
+              <button onClick={() => sendLink(p)} className="text-xs text-stone-500 hover:text-[#b8934a]" title="Email them a link to set a new password">Send password link</button>
               <button onClick={() => openEdit(p)} className="text-xs text-[#b8934a] hover:underline">Edit</button>
               <button onClick={() => remove(p)} className="text-xs text-red-400 hover:text-red-600">Remove</button>
             </div>
@@ -169,9 +187,14 @@ export default function TeamPage() {
               </div>
               <div>
                 <label className={lbl}>
-                  Password {!isNew && <span className="text-stone-300 normal-case tracking-normal">(leave blank to keep the current one)</span>}
+                  Password <span className="text-stone-300 normal-case tracking-normal">(optional)</span>
                 </label>
-                <input type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className={field} autoComplete="new-password" />
+                <input type="password" value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} className={field} autoComplete="new-password" placeholder={isNew ? "Leave blank to email them a link" : "Leave blank to keep the current one"} />
+                <p className="text-xs text-stone-500 mt-1.5 leading-relaxed">
+                  {isNew
+                    ? "Leave this blank and they will be emailed a link to choose their own password — better than sending one in plain text."
+                    : "Setting a password here changes theirs immediately. To let them choose their own, leave it blank and use Send password link."}
+                </p>
               </div>
               {error && <p className="text-sm text-red-600">{error}</p>}
             </div>
