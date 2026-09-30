@@ -65,10 +65,19 @@ export async function POST(req: NextRequest) {
     const path = raw.split("?")[0].slice(0, 200) || "/";
     if (IGNORED.test(path)) return NextResponse.json({ ok: true });
 
-    // Bots identify themselves; there is no point counting them.
+    // Most automated traffic says so in the user agent. The list is wider than
+    // the obvious crawlers because scrapers, link unfurlers, uptime checks and
+    // plain HTTP libraries all reached the site and were being counted.
     const ua = req.headers.get("user-agent") ?? "";
-    if (/bot|crawler|spider|crawling|preview|monitor|curl|wget|headless/i.test(ua)) {
-      return NextResponse.json({ ok: true });
+    const AUTOMATED = /bot|crawler|spider|crawling|preview|monitor|curl|wget|headless|slurp|archiver|scraper|fetcher|python-requests|httpx|axios|okhttp|java\/|go-http|libwww|phantomjs|puppeteer|playwright|selenium|lighthouse|pagespeed|gtmetrix|semrush|ahrefs|mj12|dotbot|petalbot|bytespider|facebookexternalhit|whatsapp|telegram|discord|slackbot|embedly|vercel|node-fetch|undici/i;
+    if (!ua || ua.length < 20 || AUTOMATED.test(ua)) {
+      return NextResponse.json({ ok: true, skipped: "automated" });
+    }
+
+    // A browser driven by a person sends a language preference; most scripted
+    // clients do not bother.
+    if (!req.headers.get("accept-language")) {
+      return NextResponse.json({ ok: true, skipped: "no language" });
     }
 
     const day = dayKey();
