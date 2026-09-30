@@ -83,7 +83,9 @@ export function emailShell(o: ShellOpts): string {
   @media only screen and (max-width:620px) {
     .asg-pad { padding-left:20px !important; padding-right:20px !important; }
     .asg-h1 { font-size:24px !important; }
-    .asg-stack { display:block !important; width:100% !important; }
+    .asg-stack { display:block !important; width:100% !important; padding:0 0 10px 0 !important; }
+    .asg-stack td[height] { height:auto !important; }
+    .asg-fullbtn { width:100% !important; }
   }
 </style>
 </head>
@@ -94,7 +96,7 @@ export function emailShell(o: ShellOpts): string {
     <tr>
       <td align="center" style="padding:${GUTTER}px ${GUTTER}px 40px ${GUTTER}px;">
 
-        <table role="presentation" width="620" cellpadding="0" cellspacing="0" border="0" style="width:620px;max-width:620px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:620px;">
 
           <!-- Logo. Cream on the brand dark, which is how the mark is drawn. -->
           <tr>
@@ -156,7 +158,7 @@ export function button(href: string, label: string): string {
 
 /** A labelled inset block inside the card. */
 export function panel(label: string, inner: string): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="asg-deep" bgcolor="${PANEL_DEEP}" style="background-color:${PANEL_DEEP};margin-bottom:16px;">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="asg-deep" bgcolor="${PANEL_DEEP}" style="background-color:${PANEL_DEEP};margin-bottom:16px;width:100%;table-layout:fixed;">
     <tr><td style="padding:22px 24px;">
       <p class="asg-gold" style="margin:0 0 14px 0;color:${GOLD};font-family:${SANS};font-size:10px;letter-spacing:0.12em;text-transform:uppercase;">${esc(label)}</p>
       ${inner}
@@ -175,9 +177,14 @@ export function paragraph(text: string): string {
 
 /** Product table used by the enquiry and quote emails. */
 export function itemsTable(head: string[], rows: string[][]): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="asg-deep" bgcolor="${PANEL_DEEP}" style="background-color:${PANEL_DEEP};margin-bottom:16px;">
+  // A fixed layout keeps every column the same width whatever the content,
+  // and lets long paths wrap instead of stretching the table.
+  const first = head.length > 2 ? 44 : 68;
+  const rest = Math.round((100 - first) / Math.max(1, head.length - 1));
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" class="asg-deep" bgcolor="${PANEL_DEEP}" style="background-color:${PANEL_DEEP};margin-bottom:16px;width:100%;table-layout:fixed;">
+    <colgroup>${head.map((_, i) => `<col style="width:${i === 0 ? first : rest}%" />`).join("")}</colgroup>
     <tr>${head.map(h => `<th align="left" class="asg-gold" style="padding:12px 16px;color:${GOLD};font-family:${SANS};font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:normal;">${esc(h)}</th>`).join("")}</tr>
-    ${rows.map(r => `<tr>${r.map((c, i) => `<td class="${i === 1 ? "asg-muted" : "asg-cream"}" style="padding:12px 16px;border-top:1px solid ${RULE};color:${i === 1 ? MUTED : CREAM};font-family:${SERIF};font-size:15px;line-height:1.5;">${c}</td>`).join("")}</tr>`).join("")}
+    ${rows.map(r => `<tr>${r.map((c, i) => `<td class="${i === 1 ? "asg-muted" : "asg-cream"}" style="padding:12px 16px;border-top:1px solid ${RULE};color:${i === 1 ? MUTED : CREAM};font-family:${SERIF};font-size:15px;line-height:1.5;word-break:break-word;">${c}</td>`).join("")}</tr>`).join("")}
   </table>`;
 }
 

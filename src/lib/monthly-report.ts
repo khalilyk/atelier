@@ -11,8 +11,10 @@ export function lastMonth(now = new Date()) {
   return { key, label };
 }
 
+/** Empty when there is nothing to compare against, so the card stays quiet
+ *  rather than saying "new on" a month that never had numbers. */
 const pct = (now: number, before: number) => {
-  if (!before) return now ? "new" : "–";
+  if (!before) return "";
   const change = Math.round(((now - before) / before) * 100);
   return `${change > 0 ? "+" : ""}${change}%`;
 };
@@ -72,19 +74,22 @@ export async function renderReport(report: Report, siteUrl: string, firstName?: 
   const c = await companyStore.get();
   const num = (n: number) => n.toLocaleString("en-AU");
 
-  const headline = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px;">
+  // Three cells of equal width that become three full-width blocks on a
+  // phone. Every card carries the same three lines, so they match in height
+  // whether or not there is a comparison to show.
+  const headline = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;table-layout:fixed;margin-bottom:16px;">
     <tr>
       ${[
         ["Page views", num(report.views), report.viewsChange],
         ["Visitors", num(report.visitors), report.visitorsChange],
         ["Enquiries", num(report.enquiries.length), ""],
-      ].map(([label, value, change]) => `
-      <td width="33%" valign="top" style="padding:0 8px 0 0;">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#111110" style="background-color:#111110;">
-          <tr><td style="padding:18px 16px;">
+      ].map(([label, value, change], i) => `
+      <td class="asg-stack" width="33.33%" valign="top" style="width:33.33%;padding:0 ${i === 2 ? "0" : "8px"} 0 0;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#111110" style="background-color:#111110;width:100%;">
+          <tr><td height="118" valign="top" style="padding:18px 16px;height:118px;">
             <p style="margin:0;color:#e8e0d0;font-family:Georgia,'Times New Roman',serif;font-size:26px;line-height:1.1;">${value}</p>
             <p style="margin:6px 0 0 0;color:#b8934a;font-family:Arial,Helvetica,sans-serif;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;">${label}</p>
-            ${change ? `<p style="margin:4px 0 0 0;color:#9b9288;font-family:Arial,Helvetica,sans-serif;font-size:11px;">${change} on ${esc(report.prevLabel)}</p>` : ""}
+            <p style="margin:4px 0 0 0;color:#9b9288;font-family:Arial,Helvetica,sans-serif;font-size:11px;">${change ? `${change} on ${esc(report.prevLabel)}` : "&nbsp;"}</p>
           </td></tr>
         </table>
       </td>`).join("")}
