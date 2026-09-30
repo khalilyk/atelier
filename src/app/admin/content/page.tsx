@@ -73,8 +73,8 @@ export default function ContentAdmin() {
   }, [registry]);
   const groupNames = useMemo(() => Object.keys(groups), [groups]);
   const fieldByKey = useMemo(() => Object.fromEntries(registry.map((f) => [f.key, f])), [registry]);
-  // The first group is open until one is picked - derived, so no extra render.
-  const active = chosen || groupNames[0] || "";
+  // Empty means the card overview; a page is only open once it is chosen.
+  const active = chosen;
 
   const isOverridden = (f: Field) => overrides[f.key] !== undefined && overrides[f.key] !== "";
   const changed = (f: Field) => (values[f.key] ?? f.default) !== (overrides[f.key] ?? f.default);
@@ -127,6 +127,14 @@ export default function ContentAdmin() {
           <p className="text-stone-900 text-sm mt-1">Edit the copy shown across the website. Blank a field or press Reset to fall back to the default.</p>
         </div>
         <div className="shrink-0 flex items-center gap-3">
+        {active && (
+          <button
+            onClick={() => setChosen("")}
+            className="text-xs uppercase tracking-widest px-3 py-3 rounded-xl border border-stone-200 bg-white text-stone-600 hover:border-[#b8934a] hover:text-[#b8934a] transition-colors"
+          >
+            All pages
+          </button>
+        )}
         {sitePage && (
           <button
             onClick={togglePreview}
@@ -145,6 +153,64 @@ export default function ContentAdmin() {
         </div>
       </div>
 
+      {!active ? (
+        <div className="space-y-10">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold mb-3">Website pages</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {groupNames.map((group) => {
+                const page = SITE_PAGE_BY_GROUP[group];
+                const n = editedCount(group);
+                return (
+                  <button key={group} onClick={() => setChosen(group)}
+                    className="group text-left bg-white rounded-2xl border border-stone-100 p-5 hover:border-[#b8934a]/60 hover:shadow-sm transition-all">
+                    <div className="flex items-start justify-between gap-2 mb-6">
+                      <span className="w-9 h-9 rounded-xl bg-[#b8934a]/10 text-[#b8934a] flex items-center justify-center text-sm">
+                        {group.charAt(0)}
+                      </span>
+                      {n > 0 && (
+                        <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#b8934a]/10 text-[#b8934a]">{n} edited</span>
+                      )}
+                    </div>
+                    <p className="text-sm font-medium text-stone-900 group-hover:text-[#8a6d2f] transition-colors">{group}</p>
+                    <p className="text-[11px] text-stone-400 mt-1 truncate">{page ? page.path : "Wording used across the site"}</p>
+                  </button>
+                );
+              })}
+
+              <button onClick={() => setChosen(SITE_DEFAULTS)}
+                className="group text-left bg-white rounded-2xl border border-stone-100 p-5 hover:border-[#b8934a]/60 hover:shadow-sm transition-all">
+                <div className="flex items-start justify-between gap-2 mb-6">
+                  <span className="w-9 h-9 rounded-xl bg-stone-100 text-stone-500 flex items-center justify-center text-sm">S</span>
+                </div>
+                <p className="text-sm font-medium text-stone-900 group-hover:text-[#8a6d2f] transition-colors">{SITE_DEFAULTS}</p>
+                <p className="text-[11px] text-stone-400 mt-1">Titles and sharing defaults</p>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold mb-3">Your pages</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              {ownPages.map((p) => (
+                <Link key={p.slug} href={`/admin/pages?page=${p.slug}`}
+                  className="group text-left bg-white rounded-2xl border border-stone-100 p-5 hover:border-[#b8934a]/60 hover:shadow-sm transition-all">
+                  <div className="flex items-start justify-between gap-2 mb-6">
+                    <span className="w-9 h-9 rounded-xl bg-stone-100 text-stone-500 flex items-center justify-center text-sm">{p.title.charAt(0)}</span>
+                    {!p.published && <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-stone-100 text-stone-500">Draft</span>}
+                  </div>
+                  <p className="text-sm font-medium text-stone-900 group-hover:text-[#8a6d2f] transition-colors">{p.title}</p>
+                  <p className="text-[11px] text-stone-400 mt-1 truncate">/{p.slug}</p>
+                </Link>
+              ))}
+              <Link href="/admin/pages"
+                className="flex items-center justify-center bg-white rounded-2xl border border-dashed border-stone-200 p-5 text-sm text-[#b8934a] hover:border-[#b8934a] transition-colors">
+                + New page
+              </Link>
+            </div>
+          </div>
+        </div>
+      ) : (
       <div className="flex flex-col md:flex-row gap-6 items-start">
         {/* Left anchor nav - sticky */}
         <nav className={`md:w-56 shrink-0 md:sticky md:top-24 md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0 w-full ${preview ? "hidden" : "flex"}`}>
@@ -292,6 +358,7 @@ export default function ContentAdmin() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }
