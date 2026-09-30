@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { admins, company as companyStore } from "@/lib/admin-store";
 import { hashPassword, generateResetToken, hashToken } from "@/lib/admin-auth";
 import { emailShell, paragraph } from "@/lib/email-layout";
+import { SITE_NAME } from "@/lib/seo";
 import { snapshot } from "@/lib/blob-backup";
 import { normaliseRole, isSuperAdmin, type Role } from "@/lib/roles";
 import { requireArea, caller } from "@/lib/admin-guard";
@@ -38,9 +39,11 @@ async function sendSetPasswordEmail(
   if (!process.env.RESEND_API_KEY) throw new Error("No RESEND_API_KEY configured");
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
-    from: `${c.name} <${FROM_EMAIL}>`,
+    // The trading name, as every other email uses - c.name is the legal
+    // entity and reads "... Pty Ltd" in an inbox.
+    from: `${SITE_NAME} <${FROM_EMAIL}>`,
     to: person.email,
-    subject: kind === "invite" ? `Your ${c.name} admin account` : "Set a new admin password",
+    subject: kind === "invite" ? `Your ${SITE_NAME} admin account` : "Set a new admin password",
     html: emailShell({
       preheader: kind === "invite"
         ? "Choose a password and your account is ready."
@@ -48,7 +51,7 @@ async function sendSetPasswordEmail(
       eyebrow: "Admin",
       heading: kind === "invite" ? `Welcome, ${first}.` : `Hello, ${first}.`,
       intro: kind === "invite"
-        ? `An account has been created for you on the ${c.name} website admin. Choose a password and you are in.`
+        ? `An account has been created for you on the ${SITE_NAME} website admin. Choose a password and you are in.`
         : "A new password has been requested for your admin account. Choose one below.",
       body: paragraph("The link is valid for seven days. If it expires, ask a Super Admin to send another.")
         + `<p style="margin:12px 0 0 0;color:#4a4540;font-family:Arial,Helvetica,sans-serif;font-size:11px;line-height:1.6;word-break:break-all;">${link}</p>`,
