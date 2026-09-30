@@ -7,21 +7,14 @@ import { useT } from "./ContentProvider";
 
 type Card = { name: string; location: string; img: string; href: string };
 
-// Shown until real projects are published, so the homepage is never empty.
-const PLACEHOLDERS: Card[] = [
-  { name: "Building 1", location: "Burwood, Sydney", img: "/Atelier_First_Project_Card.jpg", href: "/projects" },
-  { name: "Building 2", location: "Sydney CBD", img: "/Atelier_Second_Project_Card.jpg", href: "/projects" },
-  { name: "Building 3", location: "Vaucluse, Sydney", img: "/Atelier_Third_Project_Card.jpg", href: "/projects" },
-  { name: "Building 4", location: "Sydney NSW", img: "/Atelier_Fourth_Project_Card.jpg", href: "/projects" },
-  { name: "Boutique Project", location: "Sydney CBD", img: "/project-boutique.jpg", href: "/projects" },
-];
 
 export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) {
   const t = useT();
   const viewAll = t("home.projects.link") || "/projects";
-  const projects: Card[] = items.length
-    ? items.map((p) => ({ name: p.title, location: projectMeta(p), img: p.coverImage, href: `/projects/${p.slug}` }))
-    : PLACEHOLDERS;
+  // Nothing invented stands in for real work: with no projects published the
+  // section says so instead of showing cards that lead nowhere.
+  const projects: Card[] = items.map((p) => ({ name: p.title, location: projectMeta(p), img: p.coverImage, href: `/projects/${p.slug}` }));
+  const empty = projects.length === 0;
   const [index, setIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -66,7 +59,7 @@ export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) 
               <Link href={viewAll} className="arrow-link type-button text-stone-700 border-b border-stone-400 pb-px">
                 View All Projects &nbsp;<span className="arrow">→</span>
               </Link>
-              <div className="flex gap-2">
+              <div className={`flex gap-2 ${empty ? "hidden" : ""}`}>
                 <button onClick={prev} disabled={index === 0} className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all">‹</button>
                 <button onClick={next} disabled={index >= max} className="w-9 h-9 rounded-full border border-stone-300 flex items-center justify-center text-stone-500 hover:border-stone-700 hover:text-stone-700 disabled:opacity-30 transition-all">›</button>
               </div>
@@ -75,6 +68,15 @@ export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) 
         </div>
       </div>
 
+      {empty ? (
+        <div className="px-6 md:px-8 max-w-7xl mx-auto pb-16">
+          <div className="border border-stone-300/70 rounded-sm py-16 md:py-20 text-center">
+            <p className="type-label text-[#b8934a] mb-4" style={{ letterSpacing: "0.18em" }}>COMING SOON</p>
+            <p className="type-body text-stone-600 max-w-md mx-auto" style={{ lineHeight: 1.9 }}>{t("projects.empty")}</p>
+          </div>
+        </div>
+      ) : (
+      <>
       {/* Cards */}
       <div className="overflow-hidden" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} style={{ touchAction: "pan-y" }}>
         <div
@@ -116,6 +118,8 @@ export default function ProjectsCarousel({ items = [] }: { items?: Project[] }) 
             </button>
           ))}
         </div>
+      )}
+      </>
       )}
     </section>
   );

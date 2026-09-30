@@ -9,10 +9,12 @@ import { allTags, projectMeta, type Project } from "@/lib/projects";
 
 const lines = (s: string) => s.split("\n").map((l) => l.trim()).filter(Boolean);
 
-function Card({ project, big }: { project: Project; big?: boolean }) {
+function Card({ project }: { project: Project }) {
   // A project still being prepared is listed, but does not open.
   const soon = !!project.comingSoon;
-  const shell = `group block relative overflow-hidden rounded-2xl bg-stone-200 ${big ? "md:col-span-2 aspect-[16/10] md:aspect-[2/1]" : "aspect-[4/5]"}`;
+  // Every card is the same square, so the grid reads as one set rather than
+  // a feature plus leftovers.
+  const shell = "group block relative overflow-hidden rounded-2xl bg-stone-200 aspect-square";
   const inner = (
     <>
       {project.coverImage && (
@@ -20,7 +22,7 @@ function Card({ project, big }: { project: Project; big?: boolean }) {
           src={project.coverImage}
           alt={project.coverAlt || project.title}
           fill
-          sizes={big ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"}
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className={`object-cover transition-transform duration-700 ${soon ? "" : "group-hover:scale-105"}`}
         />
       )}
@@ -37,7 +39,7 @@ function Card({ project, big }: { project: Project; big?: boolean }) {
             ))}
           </div>
         )}
-        <h2 className="type-product text-white mb-1" style={{ fontSize: big ? "clamp(26px, 3vw, 44px)" : "clamp(19px, 2vw, 26px)", lineHeight: 1.15 }}>{project.title}</h2>
+        <h2 className="type-product text-white mb-1" style={{ fontSize: "clamp(21px, 2.2vw, 30px)", lineHeight: 1.15 }}>{project.title}</h2>
         {projectMeta(project) && <p className="type-body text-white/60" style={{ fontSize: "13px" }}>{projectMeta(project)}</p>}
         {soon ? (
           <span className="type-button text-white/70 border-b border-white/25 pb-px w-fit mt-4 inline-block" style={{ letterSpacing: "0.1em" }}>Coming soon</span>
@@ -60,7 +62,6 @@ export default function ProjectsList({ projects, tag }: { projects: Project[]; t
   const tags = useMemo(() => allTags(projects), [projects]);
   const [active, setActive] = useState(tag ?? "");
   const shown = active ? projects.filter((p) => p.tags.includes(active)) : projects;
-  const [lead, ...rest] = shown;
 
   return (
     <div className="min-h-screen bg-[#f5f0e8]">
@@ -97,9 +98,8 @@ export default function ProjectsList({ projects, tag }: { projects: Project[]; t
           {shown.length === 0 ? (
             <p className="type-body text-stone-400 py-16 text-center">{t("projects.empty")}</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7">
-              {lead && <Card project={lead} big />}
-              {rest.map((p) => <Card key={p.slug} project={p} />)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+              {shown.map((p) => <Card key={p.slug} project={p} />)}
             </div>
           )}
         </div>
