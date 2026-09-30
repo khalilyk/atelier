@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import ImagePicker from "../components/ImagePicker";
 import BlockList from "../components/BlockList";
 import GenericBlock from "@/app/components/GenericBlock";
@@ -217,7 +218,6 @@ export default function JournalAdmin() {
   const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [listOpen, setListOpen] = useState(false);
   // On by default; the choice is remembered per browser. Read once, lazily, so
   // the first paint already has the right layout.
   const [showPreview, setShowPreview] = useState(() => {
@@ -286,7 +286,7 @@ export default function JournalAdmin() {
   }
 
   function pick(p: JournalPost) {
-    setForm(p); setOriginalSlug(p.slug); setError(""); setListOpen(false);
+    setForm(p); setOriginalSlug(p.slug); setError("");
   }
 
   if (loading) return <div className="p-8 text-stone-400 text-sm">Loading the journal…</div>;
@@ -298,31 +298,15 @@ export default function JournalAdmin() {
       {/* Top bar: post picker, title, actions — everything you need without scrolling. */}
       <div className="sticky top-0 z-30 -mx-6 lg:-mx-8 px-6 lg:px-8 py-3 bg-[#faf9f7]/95 backdrop-blur border-b border-stone-200/70">
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative">
-            <button onClick={() => setListOpen((v) => !v)} className="flex items-center gap-2 border border-stone-200 bg-white rounded-xl px-4 py-2.5 text-sm text-stone-800 hover:border-[#b8934a]">
-              <span className="truncate max-w-[220px]">{form ? form.title : "All posts"}</span>
-              <span className="text-[10px] uppercase tracking-widest text-stone-400">{posts.length} · {live} live</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`w-4 h-4 text-stone-400 transition-transform ${listOpen ? "rotate-180" : ""}`} aria-hidden><path d="M6 9l6 6 6-6" /></svg>
-            </button>
-            {listOpen && (
-              <div className="absolute left-0 mt-2 w-[340px] max-h-[60vh] overflow-auto bg-white rounded-2xl border border-stone-200 shadow-xl z-40">
-                {posts.length === 0 ? (
-                  <p className="px-5 py-6 text-sm text-stone-400">No posts yet. Use New post to write the first one.</p>
-                ) : posts.map((p) => (
-                  <button key={p.slug} onClick={() => pick(p)}
-                    className={`w-full text-left px-5 py-3 border-b border-stone-50 last:border-b-0 transition-colors ${originalSlug === p.slug ? "bg-[#b8934a]/10" : "hover:bg-stone-50"}`}>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-stone-900 truncate">{p.title}</span>
-                      <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full shrink-0 ${p.published ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-500"}`}>{p.published ? "Live" : "Draft"}</span>
-                    </div>
-                    <p className="text-[11px] text-stone-400 mt-0.5 truncate">
-                      {p.publishedAt}{p.tags.length ? ` · ${p.tags.join(", ")}` : ""}
-                    </p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <button
+            onClick={() => { setForm(null); setOriginalSlug(""); }}
+            className={`flex items-center gap-2 border rounded-xl px-4 py-2.5 text-sm transition-colors ${form ? "border-stone-200 bg-white text-stone-800 hover:border-[#b8934a]" : "border-[#b8934a] bg-[#b8934a]/10 text-[#8a6d2f]"}`}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4" aria-hidden><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
+            All posts
+            <span className="text-[10px] uppercase tracking-widest text-stone-400">{posts.length} · {live} live</span>
+          </button>
+          {form && <span className="text-sm text-stone-800 font-medium truncate max-w-[280px]">{form.title}</span>}
 
           <button onClick={() => { setCreating(true); setError(""); }} className="text-xs uppercase tracking-widest px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-600 hover:border-[#b8934a] hover:text-[#b8934a]">New post</button>
 
@@ -364,7 +348,37 @@ export default function JournalAdmin() {
       )}
 
       {!form ? (
-        <div className="mt-6 bg-white rounded-2xl border border-stone-100 p-10 text-center text-stone-400 text-sm">Choose a post from the menu above, or write a new one.</div>
+        posts.length === 0 ? (
+          <div className="mt-6 bg-white rounded-2xl border border-stone-100 p-10 text-center text-stone-400 text-sm">No posts yet. Use New post to write the first one.</div>
+        ) : (
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {posts.map((p) => (
+              <button
+                key={p.slug}
+                onClick={() => pick(p)}
+                className="group text-left bg-white rounded-2xl border border-stone-100 overflow-hidden hover:border-[#b8934a]/60 hover:shadow-sm transition-all"
+              >
+                <div className="relative aspect-[16/10] bg-stone-100">
+                  {p.coverImage && (
+                    <Image src={p.coverImage} alt="" fill sizes="(max-width: 640px) 100vw, 25vw" className="object-cover" />
+                  )}
+                  <span className={`absolute top-3 left-3 text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full ${p.published ? "bg-emerald-50 text-emerald-600" : "bg-white/90 text-stone-500"}`}>
+                    {p.published ? "Live" : "Draft"}
+                  </span>
+                  {p.comingSoon && (
+                    <span className="absolute top-3 right-3 text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#2c2620]/85 text-[#e9c98a]">Coming soon</span>
+                  )}
+                </div>
+                <div className="p-4">
+                  <p className="text-sm font-medium text-stone-900 leading-snug line-clamp-2 group-hover:text-[#8a6d2f] transition-colors">{p.title}</p>
+                  <p className="text-[11px] text-stone-400 mt-1.5 truncate">
+                    {p.publishedAt}{p.tags.length ? ` · ${p.tags.join(", ")}` : ""}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )
       ) : (
         <div className={`mt-6 grid grid-cols-1 gap-6 items-start ${showPreview ? "lg:grid-cols-2" : "xl:grid-cols-[1fr_340px]"}`}>
           {/* Writing canvas */}
