@@ -14,6 +14,7 @@ import { list, put, del } from "@vercel/blob";
 import {
   readStore, writeStore, leads, customCategories, images, submissions, journal, projects, customPages, documents, USE_BLOB, BLOB_TOKEN, DATA_DIR,
   type Lead, type Submission,
+  activity,
 } from "./admin-store";
 import type { CustomCategory } from "./categories";
 import type { JournalPost } from "./journal";
@@ -34,7 +35,7 @@ export const DATA_FILES = [
 ] as const;
 
 /** Per-record stores, by scope name. */
-export const COLLECTIONS = ["leads", "categories", "images", "submissions", "journal", "projects", "custom-pages", "documents"] as const;
+export const COLLECTIONS = ["leads", "categories", "images", "submissions", "journal", "projects", "custom-pages", "documents", "activity"] as const;
 export type Scope = (typeof DATA_FILES)[number] | (typeof COLLECTIONS)[number];
 export const ALL_SCOPES: Scope[] = [...DATA_FILES, ...COLLECTIONS];
 
@@ -57,12 +58,17 @@ async function readScope(scope: Scope): Promise<unknown> {
     case "projects": return await projects.list();
     case "custom-pages": return await customPages.list();
     case "documents": return await documents.list();
+    case "activity": return await activity.recent(2000);
     default: return await readStore<unknown>(scope, null);
   }
 }
 
 async function writeScope(scope: Scope, value: unknown): Promise<void> {
   switch (scope) {
+    // The activity log is captured but never written back: restoring an older
+    // copy would erase the record of what happened since, which is the one
+    // thing an audit trail must not allow.
+    case "activity": return;
     case "leads": {
       const items = (Array.isArray(value) ? value : []) as Lead[];
       const keep = new Set(items.map((i) => i.id));

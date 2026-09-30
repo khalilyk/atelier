@@ -699,6 +699,60 @@ export const customPages = {
 // One blob per page view under analytics/<day>/, so concurrent visits never
 // overwrite each other. Once a day is over its views are rolled up into a
 // single summary at analytics-daily/<day> and the raw records are removed.
+/* ── ACTIVITY ──
+   Who changed what, and when. Kept per day like the view events, so a busy
+   day never rewrites one growing file. */
+
+export type Activity = {
+  at: string;          // ISO timestamp
+  actor: string;       // name, or the email when there is no name
+  email: string;
+  role: string;
+  action: string;      // "Updated", "Deleted", "Created"
+  area: string;        // "Journal", "Products", ...
+  detail: string;      // the slug, title or id, when the request carried one
+  path: string;        // the endpoint, so an unusual call is still legible
+};
+
+const ACTIVITY_PREFIX = "activity/";
+const ACTIVITY_DIR = path.join(DATA_DIR, "activity");
+
+export const activity = {
+  add: async (entry: Activity) => {
+    const day = entry.at.slice(0, 10);
+    const body = JSON.stringify(entry);
+    if (USE_BLOB) {
+      await put(`${ACTIVITY_PREFIX}${day}/${versionName()}`, body, {
+        access: "public", token: BLOB_TOKEN, addRandomSuffix: false, contentType: "application/json",
+      });
+    } else {
+      const dir = path.join(ACTIVITY_DIR, day);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, versionName()), body);
+    }
+  },
+
+  /** The most recent entries, newest first. */
+  recent: async (limit = 200): Promise<Activity[]> => {
+    let items: Activity[] = [];
+    if (USE_BLOB) {
+      const blobs = (await allBlobs(ACTIVITY_PREFIX)).sort((a, b) => (a.pathname < b.pathname ? 1 : -1)).slice(0, limit);
+      items = (await Promise.all(blobs.map((b) => readJsonBlob<Activity>(b.url)))).filter((e): e is Activity => !!e);
+    } else if (fs.existsSync(ACTIVITY_DIR)) {
+      for (const day of fs.readdirSync(ACTIVITY_DIR).sort().reverse()) {
+        const dir = path.join(ACTIVITY_DIR, day);
+        if (!fs.statSync(dir).isDirectory()) continue;
+        for (const f of fs.readdirSync(dir).sort().reverse()) {
+          if (f.endsWith(".json")) items.push(JSON.parse(fs.readFileSync(path.join(dir, f), "utf-8")));
+          if (items.length >= limit) break;
+        }
+        if (items.length >= limit) break;
+      }
+    }
+    return items.sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+  },
+};
+
 const VIEW_PREFIX = "analytics/";
 const DAILY_PREFIX = "analytics-daily/";
 const VIEW_DIR = path.join(DATA_DIR, "analytics");

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ROLES, ROLE_KEYS, roleLabel, isSuperAdmin, normaliseRole } from "@/lib/roles";
 
 type Person = { id: string; name: string; email: string; role: string; createdAt: string };
+type Entry = { at: string; actor: string; email: string; role: string; action: string; area: string; detail: string; path: string };
 
 const BLANK = { name: "", email: "", role: "editor", password: "" };
 
@@ -21,12 +22,17 @@ export default function TeamPage() {
   const [error, setError] = useState("");
   const [note, setNote] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [log, setLog] = useState<Entry[]>([]);
 
   const boss = isSuperAdmin(me?.role);
 
   const load = useCallback(async () => {
-    const res = await fetch("/api/admin/admins");
-    setPeople(res.ok ? await res.json() : []);
+    const [who, entries] = await Promise.all([
+      fetch("/api/admin/admins"),
+      fetch("/api/admin/activity?limit=100"),
+    ]);
+    setPeople(who.ok ? await who.json() : []);
+    setLog(entries.ok ? await entries.json() : []);
   }, []);
 
   useEffect(() => {
@@ -159,6 +165,35 @@ export default function TeamPage() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* What everyone else has been doing. A Super Admin's own changes are
+          not recorded, so this stays a log of the team rather than of you. */}
+      <div className="border border-stone-100 rounded-2xl bg-white mt-6">
+        <div className="px-6 py-5 border-b border-stone-100 flex items-baseline justify-between gap-3">
+          <p className="text-xs uppercase tracking-widest text-stone-400">Team activity</p>
+          <p className="text-[11px] text-stone-400">{log.length ? `last ${log.length}` : ""}</p>
+        </div>
+        {log.length === 0 ? (
+          <p className="px-6 py-8 text-sm text-stone-400">
+            Nothing recorded yet. Changes made by an Admin or Editor appear here; a Super Admin&rsquo;s own changes are not logged.
+          </p>
+        ) : (
+          <ul className="divide-y divide-stone-50 max-h-[420px] overflow-auto">
+            {log.map((e, i) => (
+              <li key={`${e.at}-${i}`} className="px-6 py-3.5 flex items-baseline gap-3 flex-wrap">
+                <span className="text-[11px] tabular-nums text-stone-400 w-36 shrink-0">
+                  {new Date(e.at).toLocaleString("en-AU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                </span>
+                <span className="text-sm text-stone-900">{e.actor}</span>
+                <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full bg-stone-100 text-stone-500">{e.role}</span>
+                <span className="text-sm text-stone-500">
+                  {e.action.toLowerCase()} in {e.area}{e.detail ? ` — ${e.detail}` : ""}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {editing && (
