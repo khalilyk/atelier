@@ -61,6 +61,14 @@ async function sources() {
   };
   walk(path.join(ROOT, "src"));
 
+  // Photography sitting at the top of public/ is the pool the admin picks
+  // cover images from. The scan above only sees source code, so a project
+  // whose cover is chosen in the admin would otherwise have no share-sized
+  // copy and fall back to the full-size original.
+  for (const e of fs.readdirSync(path.join(ROOT, "public"), { withFileTypes: true })) {
+    if (e.isFile() && /\.(png|jpe?g|webp)$/i.test(e.name)) add(`/${e.name}`);
+  }
+
   // Only the ones that actually exist on disk.
   return [...found].filter((p) => fs.existsSync(path.join(ROOT, "public", p)));
 }
