@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import ImagePicker from "../components/ImagePicker";
 import BlockList from "../components/BlockList";
@@ -68,7 +69,6 @@ export default function CustomPagesAdmin() {
   const [error, setError] = useState("");
   const [creating, setCreating] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [listOpen, setListOpen] = useState(false);
   const [open, setOpen] = useState<PanelKey | null>("publishing");
   const toggle = (k: PanelKey) => setOpen((c) => (c === k ? null : k));
   const [showPreview, setShowPreview] = useState(() => {
@@ -78,7 +78,6 @@ export default function CustomPagesAdmin() {
     try { window.localStorage.setItem(PREVIEW_KEY, v ? "off" : "on"); } catch { /* ignore */ }
     return !v;
   });
-  const menu = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/admin/custom-pages").then((r) => r.json())
@@ -149,41 +148,15 @@ export default function CustomPagesAdmin() {
     <div className="p-6 lg:p-8">
       <div className="sticky top-0 z-30 -mx-6 lg:-mx-8 px-6 lg:px-8 py-3 bg-[#faf9f7]/95 backdrop-blur border-b border-stone-200/70">
         <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative" ref={menu}>
-            <button onClick={() => setListOpen((v) => !v)} className="flex items-center gap-2 border border-stone-200 bg-white rounded-xl px-4 py-2.5 text-sm text-stone-800 hover:border-[#b8934a]">
-              <span className="truncate max-w-[220px]">{form ? form.title : "All pages"}</span>
-              <span className="text-[10px] uppercase tracking-widest text-stone-400">{list.length} · {live} live</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`w-4 h-4 text-stone-400 transition-transform ${listOpen ? "rotate-180" : ""}`} aria-hidden><path d="M6 9l6 6 6-6" /></svg>
-            </button>
-            {listOpen && (
-              <div className="absolute left-0 mt-2 w-[360px] max-h-[65vh] overflow-auto bg-white rounded-2xl border border-stone-200 shadow-xl z-40">
-                {/* The site's own pages, for reference - their wording is edited under Pages. */}
-                <p className="px-5 pt-4 pb-2 text-[10px] uppercase tracking-widest text-stone-400 font-semibold">Site pages</p>
-                {SITE_PAGES.map((p) => (
-                  <Link key={p.kind} href={`/admin/content`} className="block px-5 py-2.5 hover:bg-stone-50">
-                    <span className="flex items-center justify-between gap-2">
-                      <span className="text-sm text-stone-700">{p.label}</span>
-                      <span className="text-[11px] text-stone-400">{p.path}</span>
-                    </span>
-                  </Link>
-                ))}
-
-                <p className="px-5 pt-4 pb-2 text-[10px] uppercase tracking-widest text-stone-400 font-semibold border-t border-stone-100 mt-2">Your pages</p>
-                {list.length === 0 ? (
-                  <p className="px-5 pb-5 text-sm text-stone-400">None yet. Use New page to add one.</p>
-                ) : list.map((p) => (
-                  <button key={p.slug} onClick={() => { setForm(p); setOriginalSlug(p.slug); setError(""); setListOpen(false); }}
-                    className={`w-full text-left px-5 py-3 border-b border-stone-50 last:border-b-0 transition-colors ${originalSlug === p.slug ? "bg-[#b8934a]/10" : "hover:bg-stone-50"}`}>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-sm font-medium text-stone-900 truncate">{p.title}</span>
-                      <span className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full shrink-0 ${p.published ? "bg-emerald-50 text-emerald-600" : "bg-stone-100 text-stone-500"}`}>{p.published ? "Live" : "Draft"}</span>
-                    </div>
-                    <p className="text-[11px] text-stone-400 mt-0.5 truncate">/{p.slug}{p.showInNav ? " · in the footer" : ""}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          <button
+            onClick={() => { setForm(null); setOriginalSlug(""); }}
+            className={`flex items-center gap-2 border rounded-xl px-4 py-2.5 text-sm transition-colors ${form ? "border-stone-200 bg-white text-stone-800 hover:border-[#b8934a]" : "border-[#b8934a] bg-[#b8934a]/10 text-[#8a6d2f]"}`}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4" aria-hidden><rect x="3" y="3" width="7" height="7" rx="1.5" /><rect x="14" y="3" width="7" height="7" rx="1.5" /><rect x="3" y="14" width="7" height="7" rx="1.5" /><rect x="14" y="14" width="7" height="7" rx="1.5" /></svg>
+            All pages
+            <span className="text-[10px] uppercase tracking-widest text-stone-400">{list.length} · {live} live</span>
+          </button>
+          {form && <span className="text-sm text-stone-800 font-medium truncate max-w-[280px]">{form.title}</span>}
 
           <button onClick={() => { setCreating(true); setError(""); }} className="text-xs uppercase tracking-widest px-4 py-2.5 rounded-xl border border-stone-200 bg-white text-stone-600 hover:border-[#b8934a] hover:text-[#b8934a]">New page</button>
 
@@ -223,8 +196,47 @@ export default function CustomPagesAdmin() {
       )}
 
       {!form ? (
-        <div className="mt-6 bg-white rounded-2xl border border-stone-100 p-10 text-center text-stone-400 text-sm">
-          Choose a page from the menu above, or add a new one. The website&rsquo;s own pages are edited under Pages.
+        <div className="mt-6 space-y-10">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold mb-3">Your pages</p>
+            {list.length === 0 ? (
+              <div className="bg-white rounded-2xl border border-stone-100 p-10 text-center text-stone-400 text-sm">None yet. Use New page to add one.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {list.map((p) => (
+                  <button key={p.slug} onClick={() => { setForm(p); setOriginalSlug(p.slug); setError(""); }}
+                    className="group text-left bg-white rounded-2xl border border-stone-100 overflow-hidden hover:border-[#b8934a]/60 hover:shadow-sm transition-all">
+                    <div className="relative aspect-[16/10] bg-stone-100">
+                      {p.heroImage
+                        ? <Image src={p.heroImage} alt="" fill sizes="(max-width: 640px) 100vw, 25vw" className="object-cover" />
+                        : <span className="absolute inset-0 flex items-center justify-center text-stone-300 text-3xl font-light">{p.title.charAt(0)}</span>}
+                      <span className={`absolute top-3 left-3 text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-full ${p.published ? "bg-emerald-50 text-emerald-600" : "bg-white/90 text-stone-500"}`}>
+                        {p.published ? "Live" : "Draft"}
+                      </span>
+                    </div>
+                    <div className="p-4">
+                      <p className="text-sm font-medium text-stone-900 leading-snug line-clamp-2 group-hover:text-[#8a6d2f] transition-colors">{p.title}</p>
+                      <p className="text-[11px] text-stone-400 mt-1.5 truncate">/{p.slug}{p.showInNav ? " · in the footer" : ""}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* The website's own pages; their wording is edited under Pages. */}
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold mb-3">Site pages</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+              {SITE_PAGES.map((p) => (
+                <Link key={p.kind} href="/admin/content"
+                  className="bg-white rounded-xl border border-stone-100 px-4 py-3 hover:border-[#b8934a]/60 transition-colors">
+                  <span className="block text-sm text-stone-700 truncate">{p.label}</span>
+                  <span className="block text-[11px] text-stone-400 truncate">{p.path}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <div className={`mt-6 grid grid-cols-1 gap-6 items-start ${showPreview ? "lg:grid-cols-2" : "xl:grid-cols-[1fr_340px]"}`}>
