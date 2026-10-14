@@ -16,6 +16,12 @@ const esc = (s: string) =>
  * this page in their place. A page cannot set its own status; this can.
  */
 export async function GET() {
+  // While the site is live this address is nothing: the holding page exists
+  // only for the time the switch is on.
+  if (process.env.SITE_OFFLINE !== "1") {
+    return new NextResponse("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+
   const c = await getCompany();
   const tel = (c.phone ?? "").replace(/[^+\d]/g, "");
   const instagram = c.instagram ? `https://www.instagram.com/${c.instagram.replace(/^@/, "")}` : "";
