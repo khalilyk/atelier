@@ -67,7 +67,10 @@ export async function pageMetadata(p: PageSeo): Promise<Metadata> {
   return {
     title: absolute ? { absolute: title } : title,
     description,
-    alternates: { canonical: p.path },
+    // The full address, so the home page canonicalises to ".../" rather than
+    // the bare host: Google counts the two as separate URLs and reports one as
+    // an alternate of the other.
+    alternates: { canonical: abs(p.path) },
     openGraph: {
       type: "website",
       locale: "en_AU",
@@ -93,7 +96,7 @@ export async function rootMetadata(): Promise<Metadata> {
     title: { default: title, template: `%s | ${SITE_NAME}` },
     description: desc,
     applicationName: SITE_NAME,
-    alternates: { canonical: "/" },
+    alternates: { canonical: abs("/") },
     formatDetection: { telephone: false },
     openGraph: {
       type: "website", locale: "en_AU", siteName: SITE_NAME, url: "/",
